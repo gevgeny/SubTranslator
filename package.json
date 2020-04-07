@@ -1,0 +1,34 @@
+{
+  "name": "SubTranslator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@types/chrome": "0.0.91",
+    "@types/lodash-es": "^4.17.3",
+    "@types/react": "^16.9.2",
+    "@types/react-dom": "^16.9.0",
+    "@types/styled-components": "^4.1.19",
+    "@types/subtitle": "^2.0.2",
+    "lodash-es": "^4.17.15",
+    "mobx": "^5.13.0",
+    "mobx-react": "^6.1.3",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "styled-components": "^4.3.2",
+    "wink-pos-tagger": "^2.2.2"
+  },
+  "devDependencies": {
+    "parcel-plugin-web-extension": "^1.5.2",
+    "typescript": "^3.7.4"
+  },
+  "browserslist": [
+    "last 1 Chrome version"
+  ]
+}

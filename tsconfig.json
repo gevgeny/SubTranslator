@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "experimentalDecorators": true,
+    "lib": [ "es2018", "dom"],
+    "jsx": "react",
+    "target": "es2018",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "typeRoots" : [
+      "./node_modules/@types/",
+      "./types/index.d.ts"
+    ]
+  }
+}

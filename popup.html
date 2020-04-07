@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Muddler Popup</title>
+  <style>
+    body {
+      width: 350px;
+    }
+    fieldset {
+      border: none;
+      padding: 0;
+      margin: 0;
+    }
+    fieldset:disabled {
+      color: grey;
+    }
+  </style>
+</head>
+<body>
+  <h2>Options</h2>
+  <p>
+    Translate from <select class="sourceLangSelect"></select> to <select class="targetLangSelect"></select>
+  </p>
+  <p>
+    <label>
+    <input type="checkbox" class="commonWordsInput">
+      Hide the most common English words
+    </label>
+  </p>
+
+  <div>
+    <form>
+      <fieldset disabled="disabled" class="fieldset">
+          <label>
+            <input type="checkbox" class="contractionsWordsInput">
+            including contractions (i'm, isn't and etc.)
+          </label>
+        <p>
+          <label>
+            <input type="checkbox" class="informalWordsInput">
+            including informal contractions (shoulda, dontcha and etc.)
+          </label>
+        </p>
+
+        <p>
+          <input
+            class="commonWordsRangeInput"
+            type="range" style="width: 100%;"
+            min="10" value="100" step="10" max="3000"
+          />
+        </p>
+        <span>Total words to hide: <b class="wordCount">100</b></span>
+      </fieldset>
+    </form>
+  </div>
+  <script src="src/popup.ts"></script>
+</body>
+</html>
+

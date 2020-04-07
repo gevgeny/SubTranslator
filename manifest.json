@@ -1,0 +1,33 @@
+{
+  "name": "SubTranslator",
+  "version": "0.1",
+  "description": "SubTranslator",
+  "manifest_version": 2,
+  "background": {
+    "scripts": ["src/bg.ts"],
+    "persistent": false
+  },
+  "page_action": {
+    "default_icon": {
+      "16": "icon.png",
+      "32": "icon.png"
+    },
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [{
+    "matches": ["*://*.netflix.com/*"],
+    "js": ["src/content.ts"]
+  }],
+  "web_accessible_resources": [
+    "src/inject.ts",
+    "src/inject.css",
+    "src/spinner.css"
+  ],
+  "permissions": [
+    "https://www.netflix.com/*",
+    "activeTab",
+    "webNavigation",
+    "declarativeContent",
+    "storage"
+  ]
+}
