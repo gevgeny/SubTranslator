@@ -1,10 +1,5 @@
 import { getPrefs } from "./prefs";
 
-// Listen for messages
-const a: number = 1;
-console.log('hi', 1);
-
-
 function injectCss(path: string) {
   const link = document.createElement("link");
   link.href = chrome.extension.getURL(path);
@@ -22,7 +17,6 @@ s.onload = function() {
   (this as any).remove();
 };
 (document.head || document.documentElement).appendChild(s);
-
 
 
 chrome.runtime.onMessage.addListener((msg) => {

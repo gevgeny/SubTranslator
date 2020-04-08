@@ -80,7 +80,6 @@ function addLanguages() {
     if (value1 > value2) return 1;
     return 0;
   }).forEach(([key, value]) => {
-    console.log('<option value="${lang}">${lang}</option>');
     targetLangSelectEl.insertAdjacentHTML(
       'beforeend', `<option value="${key}">${value}</option>`
     );

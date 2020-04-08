@@ -13,9 +13,9 @@ let hideWords: boolean = defaultPrefs.hideWords;
 
 const textProcessOptions: TextProcessOptions = {
   wildcardWords: false,
-  wordPrefix: '<span class="muddler-word">',
+  wordPrefix: '<span class="sub-tr-word">',
   wordPostfix: '</span>',
-  processedWordPrefix: '<span class="muddler-word muddler-processed-word">',
+  processedWordPrefix: '<span class="sub-tr-word sub-tr-processed-word">',
   processedWordPostfix: '</span>',
 };
 
@@ -24,7 +24,7 @@ const observer = createSubtitlesObserver(textNode => {
     ? processSentence(textNode.textContent!, textProcessOptions).text
     : textNode.textContent!;
   const span = document.createElement("span");
-  span.className = 'muddler-text';
+  span.className = 'sub-tr-text';
   span.innerHTML = wildCarded;
   textNode.parentElement!.replaceChild(span, textNode);
 });
@@ -44,8 +44,8 @@ function waitForSubtitles() {
 
 waitForSubtitles();
 
-addGlobalMouseOver('muddler-word', 'muddler-popup', async (el) => {
-  el.classList.add('muddler-reveal');
+addGlobalMouseOver('sub-tr-word', 'sub-tr-popup', async (el) => {
+  el.classList.add('sub-tr-reveal');
   const pauseButton = document.querySelector<HTMLButtonElement>('.button-nfplayerPause');
   pauseButton?.click();
 
@@ -53,7 +53,7 @@ addGlobalMouseOver('muddler-word', 'muddler-popup', async (el) => {
 
   translate(el.innerText, sourceLang, targetLang).then((translation) => {
     const html = getTranslationHTML(translation, sourceLang, targetLang);
-    popupEl.querySelector('.muddler-loading')?.remove();
+    popupEl.querySelector('.sub-tr-loading')?.remove();
     popupEl.insertAdjacentHTML('beforeend', html);
   }).catch(error => {
     if (error.name !== 'AbortError') {
@@ -61,10 +61,10 @@ addGlobalMouseOver('muddler-word', 'muddler-popup', async (el) => {
     }
   });
 }, (el) => {
-  const popupEl = document.querySelector('.muddler-popup');
+  const popupEl = document.querySelector('.sub-tr-popup');
   popupEl?.remove();
 
-  el.classList.remove('muddler-reveal');
+  el.classList.remove('sub-tr-reveal');
   cancelTranslate();
 });
 
