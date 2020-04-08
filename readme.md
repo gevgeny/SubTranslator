@@ -1,6 +1,6 @@
 # Subtitle Translator
 
-Chrome Extension for fast word translation in subtitles to any language.
+Chrome Extension for fast subtitles translation on Netflix to any language.
   
 - Show tooltip with dictionary
 
@@ -8,4 +8,4 @@ Chrome Extension for fast word translation in subtitles to any language.
 
 - Hide the most common English words from subtitles for language learners.
 
-![Tooltip](/imag21.png)
+![Tooltip](/image2.png)
