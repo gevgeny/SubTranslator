@@ -1,10 +1,13 @@
-import {TextProcessOptions} from "./processSentence";
+import {TextProcessOptions} from "./wrapSentenceWords";
 
 interface TokenizeResult {
   tokens: string[],
   delimiters: string[]
 }
 
+/**
+ * Split sentence into words and delimiters
+ * */
 export const tokenize = (text: string): TokenizeResult => {
   const word = /[a-z0-9'\-]+/gi;
   const tokens = [];
@@ -22,8 +25,11 @@ export const tokenize = (text: string): TokenizeResult => {
   return { tokens, delimiters};
 };
 
+/**
+ * Merge tokens into sentence but add prefixes and postfixes around the words.
+ * */
 export const detokenize = (
-  tokens: { isProcessed: boolean, word: string }[],
+  tokens: { isHidden: boolean, word: string }[],
   delimiters: string[],
   options: TextProcessOptions
 ): string => {
@@ -31,8 +37,8 @@ export const detokenize = (
 
   for (let i = 0; i < tokens.length; i++) {
     result += delimiters[i];
-    result += tokens[i].isProcessed
-      ? `${options.processedWordPrefix}${tokens[i].word}${options.processedWordPostfix}`
+    result += tokens[i].isHidden
+      ? `${options.hiddenWordPrefix}${tokens[i].word}${options.hiddenWordPostfix}`
       : `${options.wordPrefix}${tokens[i].word}${options.wordPostfix}`;
   }
   result += delimiters[delimiters.length - 1];

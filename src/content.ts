@@ -8,16 +8,18 @@ function injectCss(path: string) {
   document.getElementsByTagName("head")[0].appendChild(link);
 }
 
-injectCss("src/inject.css");
+function injectJs(path: string) {
+  const s = document.createElement('script');
+  s.src = chrome.runtime.getURL(path);
+  s.onload = function() {
+    (this as any).remove();
+  };
+  (document.head || document.documentElement).appendChild(s);
+}
+
+injectCss("src/index.css");
 injectCss("src/spinner.css");
-
-const s = document.createElement('script');
-s.src = chrome.runtime.getURL('src/inject.js');
-s.onload = function() {
-  (this as any).remove();
-};
-(document.head || document.documentElement).appendChild(s);
-
+injectJs('src/index.js');
 
 chrome.runtime.onMessage.addListener((msg) => {
   if (msg.from === 'popup') {

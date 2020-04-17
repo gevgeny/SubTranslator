@@ -42,7 +42,6 @@ const prefsState = {
   },
   get wordCount(): number { return this._wordCount; },
   set wordCount(value: number) {
-    console.log('value', value);
     this._wordCount = value;
     commonWordsRangeInputEl.value = value.toString();
     this.updateWordCount();

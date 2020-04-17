@@ -19,8 +19,8 @@
     "js": ["src/content.ts"]
   }],
   "web_accessible_resources": [
-    "src/inject.ts",
-    "src/inject.css",
+    "src/index.ts",
+    "src/index.css",
     "src/spinner.css"
   ],
   "permissions": [
