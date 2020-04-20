@@ -4,6 +4,7 @@ import {translate, cancelTranslate} from "./translate";
 import { getTranslationHTML, insertPopup} from "./translationPopup";
 import createTextNodeChangeObserver from "./subtitleObserver";
 import {defaultPrefs, Prefs} from "./prefs";
+console.log('index.ts');
 
 let isObserving = false;
 let observer: MutationObserver | null = null;
@@ -48,10 +49,9 @@ function observeSubtitles({ onTextAppear }: { onTextAppear: (text: Text) => void
 }
 
 function processSubtitlesElement(textNode: Text) {
-  const processedText = hideWords
-    ? wrapSentenceWords(textNode.textContent!, textProcessOptions).text
-    : textNode.textContent!;
+  const processedText = wrapSentenceWords(textNode.textContent!, textProcessOptions).text;
   const span = document.createElement("span");
+
   span.className = 'sub-tr-text';
   span.innerHTML = processedText;
   textNode.parentElement!.replaceChild(span, textNode);
@@ -59,10 +59,11 @@ function processSubtitlesElement(textNode: Text) {
 
 function updatePrefs (event: CustomEvent<Prefs>) {
   const prefs = event.detail;
-  updateWordsToHide(prefs.wordCount, prefs.contractions, prefs.informal);
+  updateWordsToHide(
+    prefs.hideWords, prefs.wordCount, prefs.contractions, prefs.informal
+  );
   sourceLang = prefs.sourceLang;
   targetLang = prefs.targetLang;
-  hideWords = prefs.hideWords;
 }
 
 function translateNodeTextAndShowTooltip(el: HTMLElement) {

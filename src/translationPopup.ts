@@ -1,4 +1,8 @@
-import { DictionaryResponse } from "./translate";
+import {
+  DictionaryResponse,
+  isTranslationResult,
+  TranslationResult,
+} from "./translate";
 
 const popupWidth = 200;
 const popupHeight = 150;
@@ -14,10 +18,29 @@ export function getPopupHTML(): string {
 }
 
 export function getTranslationHTML(
-  dictResponse: DictionaryResponse,
+  dictResponse: DictionaryResponse | TranslationResult,
   sourceLang: string,
   targetLang: string,
 ): string {
+  if (isTranslationResult((dictResponse))) {
+    return `
+      <div class="sub-tr-popup-content">
+        <div class="sub-tr-dict">
+          <div class="sub-tr-dict-item">
+            <div class="sub-tr-dict-item-title">
+              <span class="sub-tr-dict-item-text">${dictResponse.text}</span>
+            </div>
+            <ol class="sub-tr-dict-meaning">
+            ${(dictResponse.translations).map(tr => `
+              <li class="sub-tr-dict-meaning-item">${tr}</li>
+            `).join('')}
+            </ol>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
   return `
     <div class="sub-tr-popup-content">
       <div class="sub-tr-dict">

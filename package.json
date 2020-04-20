@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "parcel": "^1.12.4",
-    "parcel-plugin-web-extension": "^1.5.2",
+    "parcel-plugin-web-extension": "^1.6.1",
     "typescript": "^3.8.3"
   },
   "browserslist": [

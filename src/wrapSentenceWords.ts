@@ -19,10 +19,13 @@ export interface TextProcessOptions {
 let wordsToHide: Set<string> = new Set();
 
 export const updateWordsToHide = (
+  hideWords: boolean,
   count: number,
   includeContractions: boolean,
   includeInformalContractions: boolean,
 ) => {
+  if (!hideWords) return new Set();
+
   const words: string[] = tokens
     .mostCommonWords.slice(0, count)
     .map((word: string) => word.toLowerCase());
