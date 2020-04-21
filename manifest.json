@@ -1,7 +1,7 @@
 {
-  "name": "SubTranslator",
+  "name": "Subtitle Translator.",
   "version": "0.1.0",
-  "description": "SubTranslator",
+  "description": "Translate subtitles on Netflix",
   "manifest_version": 2,
   "background": {
     "scripts": ["src/bg.ts"],
