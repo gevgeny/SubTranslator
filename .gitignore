@@ -2,3 +2,5 @@
 build
 dist
 node_modules
+dist.crx
+dist.pem
