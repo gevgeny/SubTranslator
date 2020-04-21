@@ -1,4 +1,4 @@
-import {partition} from "lodash-es";
+import { partition } from 'lodash-es';
 
 export interface DictionaryValue {
   code: string;
@@ -27,14 +27,14 @@ export interface DictionaryItem {
 }
 
 export interface Dictionary {
-  regular: DictionaryItem[]
+  regular: DictionaryItem[];
 }
 export interface DictionaryResponse {
-  [langKey: string] : Dictionary
+  [langKey: string]: Dictionary;
 }
 
 export interface TranslationResponse {
-  responseData : {
+  responseData: {
     translatedText: string;
   };
   matches: {
@@ -73,7 +73,7 @@ async function translateText(
   const result = await response.json() as TranslationResponse;
   const [matches1, matches2] = partition(result.matches, match => match['created-by'] === 'MT!');
 
-  return { text, translations: [...matches1, ...matches2].map(match => match.translation)};
+  return { text, translations: [...matches1, ...matches2].map(match => match.translation) };
 
 }
 

@@ -1,17 +1,15 @@
-import {wrapSentenceWords, TextProcessOptions, updateWordsToHide} from "./wrapSentenceWords";
-import addGlobalMouseOver from "./addGlobalMouseOver";
-import {translate, cancelTranslate} from "./translate";
-import { getTranslationHTML, insertPopup} from "./translationPopup";
-import createTextNodeChangeObserver from "./subtitleObserver";
-import {defaultPrefs, Prefs} from "./prefs";
-console.log('index.ts');
+import { wrapSentenceWords, TextProcessOptions, updateWordsToHide } from './wrapSentenceWords';
+import addGlobalMouseOver from './addGlobalMouseOver';
+import { translate, cancelTranslate } from './translate';
+import { getTranslationHTML, insertPopup } from './translationPopup';
+import createTextNodeChangeObserver from './subtitleObserver';
+import { defaultPrefs, Prefs } from './prefs';
 
 let isObserving = false;
 let observer: MutationObserver | null = null;
 let observingElement: Element | null = null;
 let sourceLang: string = defaultPrefs.sourceLang;
 let targetLang: string = defaultPrefs.targetLang;
-let hideWords: boolean = defaultPrefs.hideWords;
 
 const textProcessOptions: TextProcessOptions = {
   wordPrefix: '<span class="sub-tr-word">',
@@ -20,7 +18,7 @@ const textProcessOptions: TextProcessOptions = {
   hiddenWordPostfix: '</span>',
 };
 
-function observeSubtitles({ onTextAppear }: { onTextAppear: (text: Text) => void; }) {
+function observeSubtitles({ onTextAppear }: { onTextAppear: (text: Text) => void }): void {
   const el = document.querySelector('.player-timedtext');
 
   if (!observer) {
@@ -28,18 +26,15 @@ function observeSubtitles({ onTextAppear }: { onTextAppear: (text: Text) => void
   }
 
   if (el && !isObserving) {
-    // Start observing subtitles
     console.log('start observing subtitles');
     observingElement = el;
     observer.observe(observingElement, { childList: true, subtree: true });
     isObserving = true;
   } else if (!el && isObserving) {
-    // Stop observing subtitles
     console.log('stop observing subtitles');
     observer?.disconnect();
     isObserving = false;
   } else if (el && el !== observingElement) {
-    // Restart observing subtitles
     console.log('restart observing subtitles');
     observer.disconnect();
     observingElement = el;
@@ -48,16 +43,16 @@ function observeSubtitles({ onTextAppear }: { onTextAppear: (text: Text) => void
   setTimeout(() => { observeSubtitles({ onTextAppear }); }, 200);
 }
 
-function processSubtitlesElement(textNode: Text) {
+function processSubtitlesElement(textNode: Text): void {
   const processedText = wrapSentenceWords(textNode.textContent!, textProcessOptions).text;
-  const span = document.createElement("span");
+  const span = document.createElement('span');
 
   span.className = 'sub-tr-text';
   span.innerHTML = processedText;
   textNode.parentElement!.replaceChild(span, textNode);
 }
 
-function updatePrefs (event: CustomEvent<Prefs>) {
+function updatePrefs (event: CustomEvent<Prefs>): void {
   const prefs = event.detail;
   updateWordsToHide(
     prefs.hideWords, prefs.wordCount, prefs.contractions, prefs.informal
@@ -66,7 +61,7 @@ function updatePrefs (event: CustomEvent<Prefs>) {
   targetLang = prefs.targetLang;
 }
 
-function translateNodeTextAndShowTooltip(el: HTMLElement) {
+function translateNodeTextAndShowTooltip(el: HTMLElement): void {
   el.classList.add('sub-tr-reveal');
   const pauseButton = document.querySelector<HTMLButtonElement>('.button-nfplayerPause');
   pauseButton?.click();

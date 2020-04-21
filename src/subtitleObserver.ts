@@ -1,7 +1,14 @@
 
 function getTextNodesUnderElement(el: Node): Node[] {
-  let n, a = [], walk=document.createTreeWalker(el,NodeFilter.SHOW_TEXT, null, false);
-  while(n = walk.nextNode()) a.push(n);
+  let n;
+  const a: Node[] = [], walk = document.createTreeWalker(el,NodeFilter.SHOW_TEXT, null, false);
+  do{
+    n = walk.nextNode();
+    if (n) {
+      a.push(n);
+    }
+  } while(n);
+
 
   return a;
 }

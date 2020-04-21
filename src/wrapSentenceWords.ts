@@ -1,7 +1,6 @@
-import {detokenize, tokenize} from "./tokenize";
-import posTagger from "wink-pos-tagger";
-// @ts-ignore
-import tokens from "./tokens.json";
+import { detokenize, tokenize } from './tokenize';
+import posTagger from 'wink-pos-tagger';
+import tokens from './tokens.json';
 
 export interface ProcessResult {
   initialText: string;
@@ -24,7 +23,10 @@ export const updateWordsToHide = (
   includeContractions: boolean,
   includeInformalContractions: boolean,
 ) => {
-  if (!hideWords) return new Set();
+  if (!hideWords) {
+    wordsToHide = new Set();
+    return;
+  }
 
   const words: string[] = tokens
     .mostCommonWords.slice(0, count)
@@ -50,7 +52,6 @@ export const wrapSentenceWords = (
   options: TextProcessOptions,
 ): ProcessResult => {
   const { tokens, delimiters } = tokenize(sentence);
-
   let processedWordCount = 0;
   const processedTokens = tagger.tagRawTokens(tokens).map(token => {
 

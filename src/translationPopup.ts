@@ -2,7 +2,7 @@ import {
   DictionaryResponse,
   isTranslationResult,
   TranslationResult,
-} from "./translate";
+} from './translate';
 
 const popupWidth = 200;
 const popupHeight = 150;

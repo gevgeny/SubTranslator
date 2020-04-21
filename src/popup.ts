@@ -1,8 +1,8 @@
-import tokens from "./tokens.json";
-import { languages } from "./translate";
-import { getPrefs, Prefs, setPrefs } from "./prefs";
+import tokens from './tokens.json';
+import { languages } from './translate';
+import { getPrefs, Prefs, setPrefs } from './prefs';
 
-const commonWordsRangeInputEl = document.querySelector<HTMLInputElement>('.commonWordsRangeInput')!
+const commonWordsRangeInputEl = document.querySelector<HTMLInputElement>('.commonWordsRangeInput')!;
 const sourceLangSelectEl = document.querySelector<HTMLSelectElement>('.sourceLangSelect')!;
 const targetLangSelectEl = document.querySelector<HTMLSelectElement>('.targetLangSelect')!;
 const hideWordsInputEl = document.querySelector<HTMLInputElement>('.commonWordsInput')!;
@@ -58,7 +58,7 @@ const prefsState = {
   }
 } as Prefs;
 
-function applyPrefs() {
+function applyPrefs(): void {
   getPrefs((storagePrefs) => {
     prefsState.targetLang = storagePrefs.targetLang;
     prefsState.sourceLang = storagePrefs.sourceLang;
@@ -69,12 +69,21 @@ function applyPrefs() {
   });
 }
 
-function savePrefs() {
+function sendPrefsUpdate(): void {
+  chrome.tabs.query({
+    active: true,
+    currentWindow: true
+  }, tabs => {
+    chrome.tabs.sendMessage(tabs[0].id!, { from: 'popup' }, () => ({ }));
+  });
+}
+
+function savePrefs(): void {
   setPrefs(prefsState, sendPrefsUpdate);
 }
 
-function addLanguages() {
-  Object.entries(languages).sort(([key1, value1], [key2, value2]) => {
+function addLanguages(): void {
+  Object.entries(languages).sort(([, value1], [, value2]) => {
     if (value1 < value2) return -1;
     if (value1 > value2) return 1;
     return 0;
@@ -85,15 +94,6 @@ function addLanguages() {
     sourceLangSelectEl.insertAdjacentHTML(
       'beforeend', `<option value="${key}">${value}</option>`
     );
-  });
-}
-
-function sendPrefsUpdate() {
-  chrome.tabs.query({
-    active: true,
-    currentWindow: true
-  }, tabs => {
-    chrome.tabs.sendMessage(tabs[0].id!, {from: 'popup'}, () => {});
   });
 }
 
