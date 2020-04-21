@@ -103,7 +103,7 @@ export async function translate(
   return dict;
 }
 
-export function cancelTranslate() {
+export function cancelTranslate(): void {
   dictionaryController?.abort();
 }
 

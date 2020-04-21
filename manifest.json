@@ -1,6 +1,6 @@
 {
   "name": "SubTranslator",
-  "version": "0.1",
+  "version": "0.1.0",
   "description": "SubTranslator",
   "manifest_version": 2,
   "background": {
