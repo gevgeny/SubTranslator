@@ -1,7 +1,7 @@
 export const defaultPrefs = {
   sourceLang: 'en',
   targetLang: 'ru',
-  hideWords: true,
+  hideWords: false,
   contractions: true,
   informal: true,
   wordCount: 100,
