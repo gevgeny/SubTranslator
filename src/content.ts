@@ -12,7 +12,7 @@ async function injectJs(path: string): Promise<void> {
   return new Promise((resolve) => {
     const s = document.createElement('script');
     s.src = chrome.runtime.getURL(path);
-    s.onload = () => {
+    s.onload = function () {
       (this as any).remove();
       resolve();
     };
