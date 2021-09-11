@@ -49,8 +49,9 @@ const tagger = posTagger();
  * */
 export const wrapSentenceWords = (
   sentence: string,
-  options: TextProcessOptions,
-): ProcessResult => {
+  wrapWord: (word: string) => string,
+  wrapHiddenWord: (word: string) => string,
+) => {
   const { tokens, delimiters } = tokenize(sentence);
   let processedWordCount = 0;
   const processedTokens = tagger.tagRawTokens(tokens).map(token => {
@@ -62,7 +63,11 @@ export const wrapSentenceWords = (
     return { isHidden: false, word: token.value };
   });
 
-  const text = detokenize(processedTokens, delimiters, options);
+  const text = detokenize(processedTokens, delimiters, wrapWord, wrapHiddenWord);
 
-  return { text, processedWordCount, totalWordCount: tokens.length, initialText: sentence };
+  return {
+    text, processedWordCount,
+    totalWordCount: tokens.length,
+    initialText: sentence,
+  } as ProcessResult;
 };

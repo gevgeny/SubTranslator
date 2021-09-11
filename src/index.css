@@ -1,6 +1,7 @@
 .sub-tr-word {
   position: relative;
   display: inline-block;
+  pointer-events: auto;
 }
 
 .sub-tr-processed-word {
@@ -23,7 +24,7 @@
 .sub-tr-popup {
   background: #262626;
   border-radius: 3px;
-  position: absolute;
+  position: fixed;
   overflow: scroll;
 }
 
@@ -33,8 +34,6 @@
 
 .sub-tr-popup-content {
   font-size: 14px;
-  /*width: 100%;*/
-  /*height: 100%;*/
 }
 
 .sub-tr-dict-item-text {

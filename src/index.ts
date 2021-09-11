@@ -1,77 +1,55 @@
-import { wrapSentenceWords, TextProcessOptions, updateWordsToHide } from './wrapSentenceWords';
-import addGlobalMouseOver from './addGlobalMouseOver';
+import { wrapSentenceWords, updateWordsToHide } from './textProcessing/wrapSentenceWords';
+import addMouseEnterLeaveEventListeners from './addMouseEnterLeaveEventListeners';
 import { translate, cancelTranslate } from './translate';
-import { getTranslationHTML, insertPopup } from './translationPopup';
-import createTextNodeChangeObserver from './subtitleObserver';
-import { defaultPrefs, Prefs } from './prefs';
+import { insertTranslationPopup, insertTranslationResult, hideTranslationPopup } from './translationPopup';
+import { defaultPrefs, Prefs } from './preferencePopup/prefs';
+import {
+  subWordClassName,
+  subContainerClassName,
+  subPopupClassName,
+  getTranslationHTML,
+  subWordReveal,
+  getSubtitlesWordHTML,
+  getSubtitlesHiddenWordHTML,
+} from './markup';
+import startTextMutationObserver from './startTextMutationObserver';
 
-let isObserving = false;
-let observer: MutationObserver | null = null;
-let observingElement: Element | null = null;
+export const subContainerSelector: Record<string, string> = {
+  'kino.pub': '.jw-captions',
+  'www.netflix.com': '.player-timedtext',
+}
+
 let sourceLang: string = defaultPrefs.sourceLang;
 let targetLang: string = defaultPrefs.targetLang;
 
-const textProcessOptions: TextProcessOptions = {
-  wordPrefix: '<span class="sub-tr-word">',
-  wordPostfix: '</span>',
-  hiddenWordPrefix: '<span class="sub-tr-word sub-tr-processed-word">',
-  hiddenWordPostfix: '</span>',
-};
-
-function observeSubtitles({ onTextAppear }: { onTextAppear: (text: Text) => void }): void {
-  const el = document.querySelector('.player-timedtext');
-
-  if (!observer) {
-    observer = createTextNodeChangeObserver(onTextAppear);
-  }
-
-  if (el && !isObserving) {
-    console.log('start observing subtitles');
-    observingElement = el;
-    observer.observe(observingElement, { childList: true, subtree: true });
-    isObserving = true;
-  } else if (!el && isObserving) {
-    console.log('stop observing subtitles');
-    observer?.disconnect();
-    isObserving = false;
-  } else if (el && el !== observingElement) {
-    console.log('restart observing subtitles');
-    observer.disconnect();
-    observingElement = el;
-    observer.observe(observingElement, { childList: true, subtree: true });
-  }
-  setTimeout(() => { observeSubtitles({ onTextAppear }); }, 200);
-}
-
+/**
+ * Wraps words in the target text in separate tags.
+ * */
 function processSubtitlesElement(textNode: Text): void {
-  const processedText = wrapSentenceWords(textNode.textContent!, textProcessOptions).text;
+  const processedText = wrapSentenceWords(
+    textNode.textContent!, getSubtitlesWordHTML, getSubtitlesHiddenWordHTML,
+  ).text;
   const span = document.createElement('span');
 
-  span.className = 'sub-tr-text';
+  span.className = subContainerClassName;
   span.innerHTML = processedText;
   textNode.parentElement!.replaceChild(span, textNode);
 }
 
-function updatePrefs (event: CustomEvent<Prefs>): void {
-  const prefs = event.detail;
-  updateWordsToHide(
-    prefs.hideWords, prefs.wordCount, prefs.contractions, prefs.informal
-  );
-  sourceLang = prefs.sourceLang;
-  targetLang = prefs.targetLang;
-}
+/**
+ * Translate provided word and show popup with translation over the word.
+ * */
+function showTranslationPopup(subWordEl: HTMLElement): void {
+  subWordEl.classList.add(subWordReveal);
+  const pauseButton = document.querySelector<HTMLButtonElement>('[data-uia^="control-play-pause-pause"]');
+  const containerEl = document.querySelector('body')!;
+  const popupEl = insertTranslationPopup(subWordEl, containerEl);
 
-function translateNodeTextAndShowTooltip(el: HTMLElement): void {
-  el.classList.add('sub-tr-reveal');
-  const pauseButton = document.querySelector<HTMLButtonElement>('.button-nfplayerPause');
   pauseButton?.click();
 
-  const popupEl = insertPopup(el);
-
-  translate(el.innerText, sourceLang, targetLang).then((translation) => {
+  translate(subWordEl.innerText, sourceLang, targetLang).then((translation) => {
     const html = getTranslationHTML(translation, sourceLang, targetLang);
-    popupEl.querySelector('.sub-tr-loading')?.remove();
-    popupEl.insertAdjacentHTML('beforeend', html);
+    insertTranslationResult(popupEl, html);
   }).catch(error => {
     if (error.name !== 'AbortError') {
       throw error;
@@ -79,30 +57,31 @@ function translateNodeTextAndShowTooltip(el: HTMLElement): void {
   });
 }
 
-function hidePopup(el: HTMLElement) {
-  const popupEl = document.querySelector('.sub-tr-popup');
-  popupEl?.remove();
-
-  el.classList.remove('sub-tr-reveal');
-  cancelTranslate();
-}
-
 // Observe subtitles change on a page and replace text nodes with hidden words
 // or with just custom nodes to make translation on mouseover easier
-observeSubtitles({
+startTextMutationObserver({
+  targetElSelector: subContainerSelector[location.host],
   onTextAppear: processSubtitlesElement
 });
 
-// Translate snd show translation popup on mouseover
-//
-// Since many elements on page may have "pointer-event: none"
-// we cannot just listen mouse events directly on the text elements.
-// So we use custom event delegation
-addGlobalMouseOver({
-  targetElClassName: 'sub-tr-word',
-  ignoreElClassName: 'sub-tr-popup',
-  onEnter: translateNodeTextAndShowTooltip,
-  onLeave: hidePopup,
+// Toggle the popup with translation on mouseenter/mouseleave a word in the subtitles.
+addMouseEnterLeaveEventListeners({
+  targetElClassName: subWordClassName,
+  ignoreElClassName: subPopupClassName,
+  onEnter: showTranslationPopup,
+  onLeave: (subWordEl) => {
+    hideTranslationPopup();
+    subWordEl.classList.remove(subWordReveal);
+    cancelTranslate();
+  },
 });
 
-document.addEventListener('prefs', updatePrefs);
+// Listen to changes in preferences and update lang and word settings.
+document.addEventListener('prefs', (event: CustomEvent<Prefs>) => {
+  const prefs = event.detail;
+  updateWordsToHide(
+    prefs.hideWords, prefs.wordCount, prefs.contractions, prefs.informal
+  );
+  sourceLang = prefs.sourceLang;
+  targetLang = prefs.targetLang;
+});

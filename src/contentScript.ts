@@ -1,4 +1,4 @@
-import { getPrefs } from './prefs';
+import { getPrefs } from './preferencePopup/prefs';
 
 function injectCss(path: string): void {
   const link = document.createElement('link');
@@ -13,7 +13,7 @@ async function injectJs(path: string): Promise<void> {
     const s = document.createElement('script');
     s.src = chrome.runtime.getURL(path);
     s.onload = function () {
-      (this as any).remove();
+      (this as HTMLScriptElement).remove();
       resolve();
     };
     (document.head || document.documentElement).appendChild(s);
@@ -29,7 +29,6 @@ function sendCurrentPrefsToInjectedScripts(): void {
 injectCss('src/index.css');
 injectCss('src/spinner.css');
 injectJs('src/index.js').then(sendCurrentPrefsToInjectedScripts);
-
 
 chrome.runtime.onMessage.addListener((msg) => {
   if (msg.from === 'popup') {

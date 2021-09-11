@@ -2,7 +2,11 @@ import debounce from 'lodash-es/debounce';
 
 let selectedElement: HTMLElement | null = null;
 
-export default function addGlobalMouseOver({
+/**
+ * Custom 'mouseenter' and 'mouseleave' addEventListener.
+ * By means document.elementsFromPoint this implementation works even when other element overlaps the target.
+ * */
+export default function addMouseEnterLeaveEventListeners({
  targetElClassName, ignoreElClassName, onEnter, onLeave
 }: {
   targetElClassName: string;

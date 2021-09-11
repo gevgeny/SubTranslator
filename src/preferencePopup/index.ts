@@ -1,5 +1,5 @@
-import tokens from './tokens.json';
-import { languages } from './translate';
+import tokens from '../textProcessing/tokens.json';
+import languages from './languages';
 import { getPrefs, Prefs, setPrefs } from './prefs';
 
 const commonWordsRangeInputEl = document.querySelector<HTMLInputElement>('.commonWordsRangeInput')!;

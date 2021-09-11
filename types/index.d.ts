@@ -7,8 +7,8 @@ declare module 'wink-pos-tagger' {
     lemma: string;
   }
   interface Tagger {
-    tagSentence(sentence: string): TaggedToken[]
-    tagRawTokens(tokens: string[]): TaggedToken[]
+    tagSentence(sentence: string): TaggedToken[];
+    tagRawTokens(tokens: string[]): TaggedToken[];
   }
   const posTagger: () => Tagger;
 

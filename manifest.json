@@ -4,26 +4,26 @@
   "description": "Translate subtitles on Netflix \uD83C\uDDEC\uD83C\uDDE7\uD83C\uDDF7\uD83C\uDDFA\uD83C\uDDEA\uD83C\uDDF8\uD83C\uDDE9\uD83C\uDDEA\uD83C\uDDEB\uD83C\uDDF7",
   "manifest_version": 2,
   "background": {
-    "scripts": ["src/bg.ts"],
+    "scripts": ["src/backgroundScript.ts"],
     "persistent": false
   },
   "page_action": {
     "default_icon": {
-      "16": "icon16.png",
-      "32": "icon32.png"
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png"
     },
-    "default_popup": "popup.html"
+    "default_popup": "src/preferencePopup/index.html"
   },
   "icons": {
-    "16": "icon16.png",
-    "32": "icon32.png",
-    "48": "icon48.png",
-    "128": "icon128.png",
-    "1024": "icon1024.png"
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png",
+    "1024": "icons/icon1024.png"
   },
   "content_scripts": [{
-    "matches": ["*://*.netflix.com/*"],
-    "js": ["src/content.ts"]
+    "matches": ["*://*.netflix.com/*", "*://*.kino.pub/*"],
+    "js": ["src/contentScript.ts"]
   }],
   "web_accessible_resources": [
     "src/index.ts",
@@ -32,6 +32,7 @@
   ],
   "permissions": [
     "https://www.netflix.com/*",
+    "https://kino.pub/*",
     "declarativeContent",
     "storage"
   ]

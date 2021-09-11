@@ -26,20 +26,19 @@ export const tokenize = (text: string): TokenizeResult => {
 };
 
 /**
- * Merge tokens into sentence but add prefixes and postfixes around the words.
+ * Merge tokens into sentence but add wrap the words.
  * */
 export const detokenize = (
   tokens: { isHidden: boolean; word: string }[],
   delimiters: string[],
-  options: TextProcessOptions
+  wrapWord: (word: string) => string,
+  wrapHiddenWord: (word: string) => string,
 ): string => {
   let result = '';
 
   for (let i = 0; i < tokens.length; i++) {
     result += delimiters[i];
-    result += tokens[i].isHidden
-      ? `${options.hiddenWordPrefix}${tokens[i].word}${options.hiddenWordPostfix}`
-      : `${options.wordPrefix}${tokens[i].word}${options.wordPostfix}`;
+    result += tokens[i].isHidden ? wrapHiddenWord(tokens[i].word) : wrapWord(tokens[i].word);
   }
   result += delimiters[delimiters.length - 1];
 
