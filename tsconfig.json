@@ -2,9 +2,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "experimentalDecorators": true,
-    "lib": [ "es2018", "dom"],
+    "lib": [ "es2019", "dom"],
     "jsx": "react",
-    "target": "es2018",
+    "target": "es2019",
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,

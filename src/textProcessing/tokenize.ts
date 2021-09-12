@@ -1,5 +1,3 @@
-import { TextProcessOptions } from './wrapSentenceWords';
-
 interface TokenizeResult {
   tokens: string[];
   delimiters: string[];

@@ -13,12 +13,10 @@ import {
   getSubtitlesHiddenWordHTML,
 } from './markup';
 import startTextMutationObserver from './startTextMutationObserver';
+import { getSiteSpecificApi } from './siteApi';
 
-export const subContainerSelector: Record<string, string> = {
-  'kino.pub': '.jw-captions',
-  'www.netflix.com': '.player-timedtext',
-}
 
+const siteApi = getSiteSpecificApi();
 let sourceLang: string = defaultPrefs.sourceLang;
 let targetLang: string = defaultPrefs.targetLang;
 
@@ -26,6 +24,9 @@ let targetLang: string = defaultPrefs.targetLang;
  * Wraps words in the target text in separate tags.
  * */
 function processSubtitlesElement(textNode: Text): void {
+  const parentElClassList = textNode.parentElement?.classList;
+  if (parentElClassList?.contains?.(subWordClassName) || parentElClassList?.contains?.(subContainerClassName)) return;
+
   const processedText = wrapSentenceWords(
     textNode.textContent!, getSubtitlesWordHTML, getSubtitlesHiddenWordHTML,
   ).text;
@@ -41,11 +42,10 @@ function processSubtitlesElement(textNode: Text): void {
  * */
 function showTranslationPopup(subWordEl: HTMLElement): void {
   subWordEl.classList.add(subWordReveal);
-  const pauseButton = document.querySelector<HTMLButtonElement>('[data-uia^="control-play-pause-pause"]');
   const containerEl = document.querySelector('body')!;
   const popupEl = insertTranslationPopup(subWordEl, containerEl);
 
-  pauseButton?.click();
+  siteApi.pause();
 
   translate(subWordEl.innerText, sourceLang, targetLang).then((translation) => {
     const html = getTranslationHTML(translation, sourceLang, targetLang);
@@ -60,7 +60,7 @@ function showTranslationPopup(subWordEl: HTMLElement): void {
 // Observe subtitles change on a page and replace text nodes with hidden words
 // or with just custom nodes to make translation on mouseover easier
 startTextMutationObserver({
-  targetElSelector: subContainerSelector[location.host],
+  getTargetElement: siteApi.getSubtitleElement,
   onTextAppear: processSubtitlesElement
 });
 

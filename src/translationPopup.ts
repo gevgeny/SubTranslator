@@ -11,11 +11,10 @@ export function insertTranslationPopup(
 
   containerEl.insertAdjacentHTML('beforeend', html);
   const popupEl = document.querySelector(`.${subPopupClassName}`) as HTMLElement;
-  popupEl.style.zIndex = '100';
   popupEl.style.left = `${rect.x - popupWidth / 2 + rect.width / 2}px`;
   popupEl.style.top = rect.y > popupHeight
-    ? `${rect.y - popupHeight}px`
-    : `${rect.y + rect.height}px`;
+    ? `${rect.y - popupHeight - 5}px`
+    : `${rect.y + rect.height + 5}px`;
 
   return popupEl;
 }

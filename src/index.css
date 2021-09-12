@@ -26,6 +26,7 @@
   border-radius: 3px;
   position: fixed;
   overflow: scroll;
+  z-index: 100;
 }
 
 .sub-tr-popup-content {

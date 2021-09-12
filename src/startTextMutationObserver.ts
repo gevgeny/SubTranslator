@@ -1,34 +1,19 @@
+import uniq from 'lodash-es/uniq';
+import { getTextNodesUnderElement } from './utils';
 
 let isObserving = false;
 let observer: MutationObserver | null = null;
 let observingElement: Element | null = null;
 
-function getTextNodesUnderElement(el: Node): Node[] {
-  let n;
-  const a: Node[] = [];
-  const walk = document.createTreeWalker(el,NodeFilter.SHOW_TEXT, null, false);
-
-  do {
-    n = walk.nextNode();
-    if (n) {
-      a.push(n);
-    }
-  } while(n);
-
-  return a;
-}
-
 function createTextMutationObserver(onTextAppear: (text: Text) => void): MutationObserver {
   return new MutationObserver((mutationsList: MutationRecord[]) => {
-    const mutations = mutationsList.filter(m => m.type === 'childList' && m.addedNodes.length);
-    mutations.forEach((mutation) => {
-      if (mutation.target instanceof HTMLSpanElement) return;
 
-      mutation.addedNodes.forEach(node => {
-        const textNodes = getTextNodesUnderElement(node);
-        textNodes.forEach(onTextAppear);
-      });
-    });
+    const mutatedTextNodes = mutationsList
+      .filter(m => m.type === 'childList' && m.addedNodes.length)
+      .map((m) => Array.from(m.addedNodes).map(getTextNodesUnderElement));
+
+    const uniqTextNodes = uniq(mutatedTextNodes.flat().flat());
+    uniqTextNodes.forEach(onTextAppear);
   });
 }
 /**
@@ -36,11 +21,11 @@ function createTextMutationObserver(onTextAppear: (text: Text) => void): Mutatio
  * Restarts every time when target element is available again.
  * */
 export default function startTextMutationObserver({
-  targetElSelector,
+  getTargetElement,
   onTextAppear,
-}: { targetElSelector: string; onTextAppear: (text: Text) => void }
+}: { getTargetElement: () => HTMLElement; onTextAppear: (text: Text) => void }
 ): void {
-  const targetEl = document.querySelector(targetElSelector);
+  const targetEl = getTargetElement();
   if (!observer) {
     observer = createTextMutationObserver(onTextAppear);
   }
@@ -62,5 +47,5 @@ export default function startTextMutationObserver({
   }
   // Restart observer if not started yet.
   // It is necessary if user changed a page with video and then came back
-  setTimeout(() => { startTextMutationObserver({ targetElSelector, onTextAppear }); }, 200);
+  setTimeout(() => { startTextMutationObserver({ getTargetElement, onTextAppear }); }, 200);
 }
