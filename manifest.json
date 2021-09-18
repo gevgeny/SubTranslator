@@ -1,6 +1,6 @@
 {
   "name": "Netflix Subtitle Translator \uD83C\uDF0E",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Translate subtitles on Netflix \uD83C\uDDEC\uD83C\uDDE7\uD83C\uDDF7\uD83C\uDDFA\uD83C\uDDEA\uD83C\uDDF8\uD83C\uDDE9\uD83C\uDDEA\uD83C\uDDEB\uD83C\uDDF7",
   "manifest_version": 2,
   "background": {
