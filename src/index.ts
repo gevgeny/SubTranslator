@@ -42,7 +42,7 @@ function processSubtitlesElement(textNode: Text): void {
  * */
 function showTranslationPopup(subWordEl: HTMLElement): void {
   subWordEl.classList.add(subWordReveal);
-  const containerEl = document.querySelector('body')!;
+  const containerEl = siteApi.getSubtitlePopupMountTarget();
   const popupEl = insertTranslationPopup(subWordEl, containerEl);
 
   siteApi.pause();

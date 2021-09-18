@@ -47,9 +47,6 @@ const prefsState = {
     this.updateWordCount();
   },
   updateWordCount() {
-    console.log(this.wordCount +
-    this.contractions ? tokens.contractions.length : 0 +
-    this.informal ? tokens.informalContractions.length : 0);
     wordCountEl.innerHTML = (
       this.wordCount +
       (this.contractions ? tokens.contractions.length : 0) +
@@ -100,30 +97,30 @@ function addLanguages(): void {
 addLanguages();
 applyPrefs();
 
-sourceLangSelectEl.addEventListener('change', (event: any) => {
-  prefsState.sourceLang = event.target.value;
+sourceLangSelectEl.addEventListener('change', (event: Event) => {
+  prefsState.sourceLang = (event.target as HTMLInputElement).value;
   savePrefs();
 });
-targetLangSelectEl.addEventListener('change', (event: any) => {
-  prefsState.targetLang = event.target.value;
+targetLangSelectEl.addEventListener('change', (event: Event) => {
+  prefsState.targetLang = (event.target as HTMLInputElement).value;
   savePrefs();
 });
-hideWordsInputEl.addEventListener('change', (event: any) => {
-  prefsState.hideWords = event.target.checked;
+hideWordsInputEl.addEventListener('change', (event: Event) => {
+  prefsState.hideWords = (event.target as HTMLInputElement).checked;
   savePrefs();
 });
-contractionsWordsInputEl.addEventListener('change', (event: any) => {
-  prefsState.contractions = event.target.checked;
+contractionsWordsInputEl.addEventListener('change', (event: Event) => {
+  prefsState.contractions = (event.target as HTMLInputElement).checked;
   savePrefs();
 });
-informalWordsInputEl.addEventListener('change', (event: any) => {
-  prefsState.informal = event.target.checked;
+informalWordsInputEl.addEventListener('change', (event: Event) => {
+  prefsState.informal = (event.target as HTMLInputElement).checked;
   savePrefs();
 });
-commonWordsRangeInputEl.addEventListener('input', (event: any) => {
-  prefsState.wordCount = parseInt(event.target.value, 10);
+commonWordsRangeInputEl.addEventListener('input', (event: Event) => {
+  prefsState.wordCount = parseInt((event.target as HTMLInputElement).value, 10);
 });
-commonWordsRangeInputEl.addEventListener('change', (event: any) => {
-  prefsState.wordCount = parseInt(event.target.value, 10);
+commonWordsRangeInputEl.addEventListener('change', (event: Event) => {
+  prefsState.wordCount = parseInt((event.target as HTMLInputElement).value, 10);
   savePrefs();
 });
