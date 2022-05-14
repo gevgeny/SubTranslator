@@ -16,13 +16,17 @@ export interface TextProcessOptions {
   hiddenWordPostfix: string;
 }
 let wordsToHide: Set<string> = new Set();
+let hideAllWords = false;
 
 export const updateWordsToHide = (
   hideWords: boolean,
   count: number,
   includeContractions: boolean,
   includeInformalContractions: boolean,
+  hideType: 'most-common' | 'all',
 ) => {
+  hideAllWords = hideWords && hideType === 'all';
+  if (hideAllWords) return;
   if (!hideWords) {
     wordsToHide = new Set();
     return;
@@ -54,9 +58,9 @@ export const wrapSentenceWords = (
 ) => {
   const { tokens, delimiters } = tokenize(sentence);
   let processedWordCount = 0;
+  console.log('hideAllWords', hideAllWords);
   const processedTokens = tagger.tagRawTokens(tokens).map(token => {
-
-    if (wordsToHide.has(token.lemma || token.normal)) {
+    if (hideAllWords || wordsToHide.has(token.lemma || token.normal)) {
       processedWordCount++;
       return { isHidden: true, word: token.value };
     }

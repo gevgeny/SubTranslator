@@ -6,11 +6,10 @@ import { defaultPrefs, Prefs } from './preferencePopup/prefs';
 import {
   subWordClassName,
   subContainerClassName,
-  subPopupClassName,
   getTranslationHTML,
   subWordReveal,
   getSubtitlesWordHTML,
-  getSubtitlesHiddenWordHTML,
+  getSubtitlesHiddenWordHTML, subPopupWrapperClassName,
 } from './markup';
 import startTextMutationObserver from './startTextMutationObserver';
 import { getSiteSpecificApi } from './siteApi';
@@ -37,25 +36,7 @@ function processSubtitlesElement(textNode: Text): void {
   textNode.parentElement!.replaceChild(span, textNode);
 }
 
-/**
- * Translate provided word and show popup with translation over the word.
- * */
-function showTranslationPopup(subWordEl: HTMLElement): void {
-  subWordEl.classList.add(subWordReveal);
-  const containerEl = siteApi.getSubtitlePopupMountTarget();
-  const popupEl = insertTranslationPopup(subWordEl, containerEl);
-
-  siteApi.pause();
-
-  translate(subWordEl.innerText, sourceLang, targetLang).then((translation) => {
-    const html = getTranslationHTML(translation, sourceLang, targetLang);
-    insertTranslationResult(popupEl, html);
-  }).catch(error => {
-    if (error.name !== 'AbortError') {
-      throw error;
-    }
-  });
-}
+console.log('[Subtitle Translator \uD83C\uDF0E] initialized');
 
 // Observe subtitles change on a page and replace text nodes with hidden words
 // or with just custom nodes to make translation on mouseover easier
@@ -67,9 +48,28 @@ startTextMutationObserver({
 // Toggle the popup with translation on mouseenter/mouseleave a word in the subtitles.
 addMouseEnterLeaveEventListeners({
   targetElClassName: subWordClassName,
-  ignoreElClassName: subPopupClassName,
-  onEnter: showTranslationPopup,
-  onLeave: (subWordEl) => {
+  ignoreElClassName: subPopupWrapperClassName,
+
+  // Translate hovered word and show translation popup
+  onEnter: (subWordEl: HTMLElement) => {
+    subWordEl.classList.add(subWordReveal);
+    const containerEl = siteApi.getSubtitlePopupMountTarget();
+    const popupEl = insertTranslationPopup(subWordEl, containerEl);
+
+    siteApi.pause();
+
+    translate(subWordEl.innerText, sourceLang, targetLang).then((translation) => {
+      const html = getTranslationHTML(translation, sourceLang, targetLang);
+      insertTranslationResult(popupEl, html);
+    }).catch(error => {
+      if (error.name !== 'AbortError') {
+        throw error;
+      }
+    });
+  },
+
+  // Hide translation popup
+  onLeave: (subWordEl: HTMLElement) => {
     hideTranslationPopup();
     subWordEl.classList.remove(subWordReveal);
     cancelTranslate();
@@ -80,7 +80,7 @@ addMouseEnterLeaveEventListeners({
 document.addEventListener('prefs', (event: CustomEvent<Prefs>) => {
   const prefs = event.detail;
   updateWordsToHide(
-    prefs.hideWords, prefs.wordCount, prefs.contractions, prefs.informal
+    prefs.hideWords, prefs.wordCount, prefs.contractions, prefs.informal, prefs.hideType
   );
   sourceLang = prefs.sourceLang;
   targetLang = prefs.targetLang;

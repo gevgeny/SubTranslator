@@ -1,6 +1,7 @@
 import {
-  getPopupHTML, popupHeight, popupWidth, subLoadingClassName, subPopupClassName
+  getPopupHTML, popupHeight, popupOffset, popupWidth, subLoadingClassName, subPopupClassName, subPopupWrapperClassName
 } from './markup';
+import { popupCss, spinnerCss } from './styles';
 
 export function insertTranslationPopup(
   targetEl: HTMLElement,
@@ -9,12 +10,26 @@ export function insertTranslationPopup(
   const html = getPopupHTML();
   const rect = targetEl.getBoundingClientRect();
 
-  containerEl.insertAdjacentHTML('beforeend', html);
-  const popupEl = document.querySelector(`.${subPopupClassName}`) as HTMLElement;
+  const shadowDomWrapperEl = document.createElement('div');
+  console.log('shadowDomWrapperEl', shadowDomWrapperEl);
+  shadowDomWrapperEl.classList.add(subPopupWrapperClassName);
+  const shadow = shadowDomWrapperEl.attachShadow({ mode: 'open' });
+
+  const wrapper = document.createElement('div');
+  wrapper.innerHTML = html;
+
+  const style = document.createElement('style');
+  style.textContent = popupCss + spinnerCss;
+
+  shadow.appendChild(style);
+  shadow.appendChild(wrapper);
+  shadow.appendChild(wrapper);
+  containerEl.appendChild(shadowDomWrapperEl);
+  const popupEl = wrapper.querySelector(`.${subPopupClassName}`) as HTMLElement;
   popupEl.style.left = `${rect.x - popupWidth / 2 + rect.width / 2}px`;
   popupEl.style.top = rect.y > popupHeight
-    ? `${rect.y - popupHeight - 5}px`
-    : `${rect.y + rect.height + 5}px`;
+    ? `${rect.y - popupHeight - popupOffset}px`
+    : `${rect.y + rect.height + popupOffset}px`;
 
   return popupEl;
 }
@@ -28,6 +43,6 @@ export function insertTranslationResult(
 }
 
 export function hideTranslationPopup() {
-  const popupEl = document.querySelector(`.${subPopupClassName}`);
+  const popupEl = document.querySelector(`.${subPopupWrapperClassName}`);
   popupEl?.remove();
 }

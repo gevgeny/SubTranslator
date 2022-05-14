@@ -28,6 +28,14 @@ const siteApiMap: Record<string, SiteSpecificApi> = {
       )?.click();
     }
   },
+  'www.youtube.com': {
+    getSubtitleElement: () => document.querySelector('.ytp-caption-window-container')!,
+    getSubtitlePopupMountTarget: () => document.querySelector('.html5-video-player')!,
+    pause: () => {
+      if (document.querySelector<HTMLVideoElement>('#ytd-player video')!.paused) return;
+      document.querySelector<HTMLButtonElement>('.ytp-play-button')?.click();
+    }
+  },
 };
 
 export function getSiteSpecificApi() {

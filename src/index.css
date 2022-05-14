@@ -28,6 +28,10 @@
   overflow: scroll;
   z-index: 100000;
 }
+.sub-tr-popup.sub-tr-popup.sub-tr-popup.sub-tr-popup::-webkit-scrollbar {
+  width: auto;
+  background-color: transparent;
+}
 
 .sub-tr-popup-content {
   padding: 16px;

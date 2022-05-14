@@ -5,16 +5,26 @@
   <title>SubTranslator Popup</title>
   <style>
     body {
-      width: 350px;
+      width: 420px;
     }
     fieldset {
       border: none;
-      padding: 0;
+      padding: 0 0 0 8px;
       margin: 0;
     }
     fieldset:disabled {
       color: grey;
     }
+    label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 0;
+    }
+    input {
+      margin: 0;
+    }
+
   </style>
 </head>
 <body>
@@ -24,33 +34,46 @@
   </p>
   <p>
     <label>
-    <input type="checkbox" class="commonWordsInput">
-      Hide the most common English words
+      <input type="checkbox" class="commonWordsInput">
+      Hide words (useful for language learners)
     </label>
   </p>
 
   <div>
     <form>
       <fieldset disabled="disabled" class="fieldset">
-          <label>
-            <input type="checkbox" class="contractionsWordsInput">
-            including contractions (i'm, isn't and etc.)
-          </label>
-        <p>
-          <label>
-            <input type="checkbox" class="informalWordsInput">
-            including informal contractions (shoulda, dontcha and etc.)
-          </label>
-        </p>
+        <label>
+          <input type="radio" class="mostFrequentWordsInput" name="words" value="most-common">
+          Only most frequent English words ranked by popularity
+        </label>
 
-        <p>
-          <input
-            class="commonWordsRangeInput"
-            type="range" style="width: 100%;"
-            min="10" value="100" step="10" max="3000"
-          />
-        </p>
-        <span>Total words to hide: <b class="wordCount">100</b></span>
+        <fieldset class="mostFrequentWordsFieldset">
+          <label style="justify-content: space-between">
+            <input
+              class="commonWordsRangeInput"
+              type="range" style="width: 100%;"
+              min="10" value="100" step="10" max="3000"
+            />
+          </label>
+          <div style="display: flex; justify-content: space-between">
+            <label>
+              <input type="checkbox" class="contractionsWordsInput">
+               contractions (I'm, isn't)
+            </label>
+            <label>
+              <input type="checkbox" class="informalWordsInput">
+              informal contractions (shoulda, dontcha)
+            </label>
+          </div>
+        </fieldset>
+
+        <label>
+          <input type="radio" class="allWordsInputInput" name="words" value="all">
+          All words
+        </label>
+        <div style="display: flex; justify-content: flex-end; padding: 0.5rem 0;">
+          Hidden words: &nbsp; <b class="wordCount">100</b>
+        </div>
       </fieldset>
     </form>
   </div>

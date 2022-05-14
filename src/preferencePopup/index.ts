@@ -9,6 +9,9 @@ const hideWordsInputEl = document.querySelector<HTMLInputElement>('.commonWordsI
 const contractionsWordsInputEl = document.querySelector<HTMLInputElement>('.contractionsWordsInput')!;
 const informalWordsInputEl = document.querySelector<HTMLInputElement>('.informalWordsInput')!;
 const fieldsetEl = document.querySelector<HTMLFieldSetElement>('.fieldset')!;
+const mostFrequentWordsInputEl = document.querySelector<HTMLInputElement>('.mostFrequentWordsInput')!;
+const allWordsInputEl = document.querySelector<HTMLInputElement>('.allWordsInputInput')!;
+const mostFrequentWordsFieldsetEl = document.querySelector<HTMLFieldSetElement>('.mostFrequentWordsFieldset')!;
 const wordCountEl = document.querySelector<HTMLElement>('.wordCount')!;
 
 const prefsState = {
@@ -17,36 +20,61 @@ const prefsState = {
     this._targetLang = value;
     targetLangSelectEl.value = value;
   },
+
   get sourceLang(): string { return this._sourceLang; },
   set sourceLang(value: string) {
     this._sourceLang = value;
     sourceLangSelectEl.value = value;
   },
+
   get hideWords(): boolean { return this._hideWords; },
   set hideWords(value: boolean) {
     this._hideWords = value;
     hideWordsInputEl.checked = value;
     fieldsetEl.disabled = !value;
   },
+
   get contractions(): boolean { return this._contractions; },
   set contractions(value: boolean) {
     this._contractions = value;
     contractionsWordsInputEl.checked = value;
     this.updateWordCount();
   },
+
   get informal(): boolean { return this._informal; },
   set informal(value: boolean) {
     this._informal = value;
     informalWordsInputEl.checked = value;
     this.updateWordCount();
   },
+
   get wordCount(): number { return this._wordCount; },
   set wordCount(value: number) {
     this._wordCount = value;
     commonWordsRangeInputEl.value = value.toString();
     this.updateWordCount();
   },
+
+  get hideType(): 'most-common' | 'all' { return this._hideType; },
+  set hideType(value: 'most-common' | 'all') {
+    console.log('value', value);
+    this._hideType = value;
+    if (value === 'all') {
+      allWordsInputEl.checked = true;
+      mostFrequentWordsFieldsetEl.disabled = true;
+    } else {
+      mostFrequentWordsInputEl.checked = true;
+      mostFrequentWordsFieldsetEl.disabled = false;
+    }
+    this.updateWordCount();
+  },
+
   updateWordCount() {
+    if (this.hideType === 'all') {
+      wordCountEl.innerHTML = 'All';
+      return;
+    }
+
     wordCountEl.innerHTML = (
       this.wordCount +
       (this.contractions ? tokens.contractions.length : 0) +
@@ -63,6 +91,7 @@ function applyPrefs(): void {
     prefsState.wordCount = storagePrefs.wordCount;
     prefsState.informal = storagePrefs.informal;
     prefsState.hideWords = storagePrefs.hideWords;
+    prefsState.hideType = storagePrefs.hideType;
   });
 }
 
@@ -123,4 +152,16 @@ commonWordsRangeInputEl.addEventListener('input', (event: Event) => {
 commonWordsRangeInputEl.addEventListener('change', (event: Event) => {
   prefsState.wordCount = parseInt((event.target as HTMLInputElement).value, 10);
   savePrefs();
+});
+allWordsInputEl.addEventListener('change', (event: Event) => {
+  if ((event.target as HTMLInputElement).checked) {
+    prefsState.hideType = 'all';
+    savePrefs();
+  }
+});
+mostFrequentWordsInputEl.addEventListener('change', (event: Event) => {
+  if ((event.target as HTMLInputElement).checked) {
+    prefsState.hideType = 'most-common';
+    savePrefs();
+  }
 });

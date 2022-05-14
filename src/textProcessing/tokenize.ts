@@ -24,7 +24,7 @@ export const tokenize = (text: string): TokenizeResult => {
 };
 
 /**
- * Merge tokens into sentence but add wrap the words.
+ * Merge tokens into sentence and wrap the words.
  * */
 export const detokenize = (
   tokens: { isHidden: boolean; word: string }[],

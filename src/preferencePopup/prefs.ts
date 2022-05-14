@@ -1,17 +1,26 @@
-export const defaultPrefs = {
+export const defaultPrefs: Prefs = {
   sourceLang: 'en',
   targetLang: 'ru',
   hideWords: false,
+  hideType: 'most-common',
   contractions: true,
   informal: true,
   wordCount: 100,
 };
 
-export type Prefs = typeof defaultPrefs;
+export type Prefs = {
+  sourceLang: string;
+  targetLang: string;
+  hideWords: boolean;
+  hideType: 'most-common' | 'all';
+  contractions: boolean;
+  informal: boolean;
+  wordCount: number;
+};
 
 export function getPrefs(callback: (pref: Prefs) => void) {
   chrome.storage.sync.get(
-    ['sourceLang', 'targetLang', 'contractions', 'wordCount', 'informal', 'hideWords'],
+    ['sourceLang', 'targetLang', 'contractions', 'wordCount', 'informal', 'hideWords', 'hideType'],
     (storagePrefs) => {
       callback({
         sourceLang: storagePrefs.sourceLang ?? defaultPrefs.sourceLang,
@@ -20,6 +29,7 @@ export function getPrefs(callback: (pref: Prefs) => void) {
         wordCount: storagePrefs.wordCount ?? defaultPrefs.wordCount,
         informal: storagePrefs.informal ?? defaultPrefs.informal,
         hideWords: storagePrefs.hideWords ?? defaultPrefs.hideWords,
+        hideType: storagePrefs.hideType ?? defaultPrefs.hideType,
       });
     },
   );
@@ -33,6 +43,7 @@ export function setPrefs(prefs: Prefs, callback: () => void) {
     contractions: prefs.contractions,
     informal: prefs.informal,
     wordCount: prefs.wordCount,
+    hideType: prefs.hideType,
   }, () => {
     console.log('Settings saved');
     callback();

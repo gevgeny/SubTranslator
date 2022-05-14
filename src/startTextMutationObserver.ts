@@ -1,5 +1,5 @@
 import uniq from 'lodash-es/uniq';
-import { getTextNodesUnderElement } from './utils';
+import { fetchTextNodes } from './utils';
 
 let isObserving = false;
 let observer: MutationObserver | null = null;
@@ -7,11 +7,9 @@ let observingElement: Element | null = null;
 
 function createTextMutationObserver(onTextAppear: (text: Text) => void): MutationObserver {
   return new MutationObserver((mutationsList: MutationRecord[]) => {
-
     const mutatedTextNodes = mutationsList
       .filter(m => m.type === 'childList' && m.addedNodes.length)
-      .map((m) => Array.from(m.addedNodes).map(getTextNodesUnderElement));
-
+      .map((m) => Array.from(m.addedNodes).map(fetchTextNodes));
     const uniqTextNodes = uniq(mutatedTextNodes.flat().flat());
     uniqTextNodes.forEach(onTextAppear);
   });

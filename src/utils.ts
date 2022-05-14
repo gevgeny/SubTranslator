@@ -29,17 +29,19 @@ export async function injectJs(path: string): Promise<void> {
   });
 }
 
-export function getTextNodesUnderElement(el: Node): Node[] {
-  let n;
-  const a: Node[] = [];
-  const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+export function fetchTextNodes(node: Node | Text): Text[] {
+  if (node instanceof Text) return [node];
+
+  const result: Text[] = [];
+  const walk = document.createTreeWalker(node, NodeFilter.SHOW_TEXT, null);
+  let textNode: Text | null = null;
 
   do {
-    n = walk.nextNode();
-    if (n) {
-      a.push(n);
+    textNode = walk.nextNode() as Text;
+    if (textNode) {
+      result.push(textNode);
     }
-  } while(n);
+  } while (textNode);
 
-  return a;
+  return result;
 }

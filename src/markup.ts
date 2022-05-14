@@ -6,9 +6,11 @@ import {
 
 export const popupWidth = 200;
 export const popupHeight = 150;
+export const popupOffset = 3;
 export const subContainerClassName = 'sub-tr-text';
 export const subWordClassName = 'sub-tr-word';
 export const subProcessedWordClassName = 'sub-tr-processed-word';
+export const subPopupWrapperClassName = 'sub-tr-popup-wrapper';
 export const subPopupClassName = 'sub-tr-popup';
 export const subWordReveal = 'sub-tr-reveal';
 export const subLoadingClassName = 'sub-tr-loading';
