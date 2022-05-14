@@ -14,7 +14,7 @@
   "dependencies": {
     "@types/chrome": "0.0.91",
     "@types/lodash-es": "^4.17.3",
-    "lodash-es": "^4.17.15",
+    "lodash-es": "^4.17.21",
     "wink-pos-tagger": "^2.2.2"
   },
   "devDependencies": {
