@@ -9,9 +9,7 @@ export function insertTranslationPopup(
 ): HTMLElement {
   const html = getPopupHTML();
   const rect = targetEl.getBoundingClientRect();
-
   const shadowDomWrapperEl = document.createElement('div');
-  console.log('shadowDomWrapperEl', shadowDomWrapperEl);
   shadowDomWrapperEl.classList.add(subPopupWrapperClassName);
   const shadow = shadowDomWrapperEl.attachShadow({ mode: 'open' });
 

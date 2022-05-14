@@ -1,10 +1,23 @@
+// language=css
 export const popupCss = `
   .sub-tr-popup {
     background: #262626;
     border-radius: 3px;
     position: fixed;
     overflow-y: scroll;
+    overscroll-behavior: contain;
     z-index: 100000;
+  }
+  .sub-tr-popup::-webkit-scrollbar {
+    width: 14px;
+    height: 14px;
+    background-color: transparent; /* or add it to the track */
+  }
+  .sub-tr-popup::-webkit-scrollbar-thumb {
+    background: #aaa;
+    border-radius: 8px;
+    border: 4px solid transparent;
+    background-clip: content-box;
   }
   
   .sub-tr-popup-content {
@@ -46,6 +59,7 @@ export const popupCss = `
   }
 `;
 
+// language=css
 export const spinnerCss = `
   .lds-spinner {
     color: official;
