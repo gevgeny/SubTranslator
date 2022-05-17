@@ -1,5 +1,5 @@
 import uniq from 'lodash-es/uniq';
-import { fetchTextNodes } from './utils';
+import {fetchTextNodes, logPrefix} from './utils';
 
 let isObserving = false;
 let observer: MutationObserver | null = null;
@@ -29,16 +29,16 @@ export default function startTextMutationObserver({
   }
 
   if (targetEl && !isObserving) {
-    console.log('start observing subtitles');
+    console.log(logPrefix, 'start observing subtitles');
     observingElement = targetEl;
     observer.observe(observingElement, { childList: true, subtree: true });
     isObserving = true;
   } else if (!targetEl && isObserving) {
-    console.log('stop observing subtitles');
+    console.log(logPrefix, 'stop observing subtitles');
     observer?.disconnect();
     isObserving = false;
   } else if (targetEl && targetEl !== observingElement) {
-    console.log('restart observing subtitles');
+    console.log(logPrefix, 'restart observing subtitles');
     observer.disconnect();
     observingElement = targetEl;
     observer.observe(observingElement, { childList: true, subtree: true });

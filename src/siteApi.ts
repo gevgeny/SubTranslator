@@ -29,11 +29,11 @@ const siteApiMap: Record<string, SiteSpecificApi> = {
     }
   },
   'www.youtube.com': {
-    getSubtitleElement: () => document.querySelector('.ytp-caption-window-container')!,
-    getSubtitlePopupMountTarget: () => document.querySelector('.html5-video-player')!,
+    getSubtitleElement: () => document.querySelector('#movie_player .ytp-caption-window-container')!,
+    getSubtitlePopupMountTarget: () => document.querySelector('#movie_player')!,
     pause: () => {
-      if (document.querySelector<HTMLVideoElement>('#ytd-player video')!.paused) return;
-      document.querySelector<HTMLButtonElement>('.ytp-play-button')?.click();
+      if (document.querySelector<HTMLVideoElement>('#movie_player video')!.paused) return;
+      document.querySelector<HTMLButtonElement>('#movie_player .ytp-play-button')?.click();
     }
   },
 };

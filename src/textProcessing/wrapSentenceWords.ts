@@ -58,7 +58,6 @@ export const wrapSentenceWords = (
 ) => {
   const { tokens, delimiters } = tokenize(sentence);
   let processedWordCount = 0;
-  console.log('hideAllWords', hideAllWords);
   const processedTokens = tagger.tagRawTokens(tokens).map(token => {
     if (hideAllWords || wordsToHide.has(token.lemma || token.normal)) {
       processedWordCount++;

@@ -1,3 +1,5 @@
+import { logPrefix } from '../utils';
+
 export const defaultPrefs: Prefs = {
   sourceLang: 'en',
   targetLang: 'ru',
@@ -45,7 +47,7 @@ export function setPrefs(prefs: Prefs, callback: () => void) {
     wordCount: prefs.wordCount,
     hideType: prefs.hideType,
   }, () => {
-    console.log('Settings saved');
+    console.log(logPrefix, 'Settings saved');
     callback();
   });
 }

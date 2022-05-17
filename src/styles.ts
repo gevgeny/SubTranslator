@@ -22,9 +22,6 @@ export const popupCss = `
   
   .sub-tr-popup-content {
     padding: 16px;
-  }
-  
-  .sub-tr-popup-content {
     font-size: 14px;
   }
   
@@ -48,6 +45,7 @@ export const popupCss = `
   
   .sub-tr-dict-meaning-item {
     padding: 2px 4px;
+    word-break: break-all;
   }
   
   .sub-tr-loading {

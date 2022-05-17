@@ -1,3 +1,6 @@
+import elements = chrome.devtools.panels.elements;
+import {popupHeight, popupOffset, popupWidth} from "./markup";
+
 export function isVisible(el?: HTMLElement | null) {
   if (!el) return false;
 
@@ -45,3 +48,45 @@ export function fetchTextNodes(node: Node | Text): Text[] {
 
   return result;
 }
+
+export function positionElement (element: HTMLElement, anchorElement: HTMLElement, fitElement: HTMLElement) {
+  const gap = 5;
+  const anchorElementRect = anchorElement.getBoundingClientRect();
+  const fitElementRect = fitElement.getBoundingClientRect();
+  let left = anchorElementRect.x - popupWidth / 2 + anchorElementRect.width / 2;
+  const top = anchorElementRect.y > popupHeight
+    ? anchorElementRect.y - popupHeight - popupOffset
+    : anchorElementRect.y + anchorElementRect.height + popupOffset;
+
+  if (left < fitElementRect.x) {
+    left = fitElementRect.x + gap;
+  }
+  if (left + popupWidth > fitElementRect.x + fitElementRect.width) {
+    left = fitElementRect.x + fitElementRect.width - popupWidth - gap;
+  }
+
+  element.style.left = `${left}px`;
+  element.style.top = `${top}px`;
+}
+
+let stopScrollPosition: number | null = null;
+
+
+window.addEventListener('scroll', (e: Event) => {
+  console.log('target', e.target);
+  if (stopScrollPosition !== null) {
+    console.log('stopScrollPosition', stopScrollPosition);
+    window.scrollTo(window.scrollX, stopScrollPosition);
+    e.stopImmediatePropagation();
+  }
+});
+
+export function disableScroll() {
+  stopScrollPosition = window.scrollY;
+}
+
+export function enableScroll() {
+  stopScrollPosition = null;
+}
+
+export const logPrefix = '\u001b[1;36m[Subtitle Translator \uD83C\uDF0E]';

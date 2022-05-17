@@ -13,6 +13,7 @@ import {
 } from './markup';
 import startTextMutationObserver from './startTextMutationObserver';
 import { getSiteSpecificApi } from './siteApi';
+import { logPrefix } from './utils';
 
 
 const siteApi = getSiteSpecificApi();
@@ -36,7 +37,7 @@ function processSubtitlesElement(textNode: Text): void {
   textNode.parentElement!.replaceChild(span, textNode);
 }
 
-console.log('[Subtitle Translator \uD83C\uDF0E] initialized');
+console.log(logPrefix, 'initialized');
 
 // Observe subtitles change on a page and replace text nodes with hidden words
 // or with just custom nodes to make translation on mouseover easier

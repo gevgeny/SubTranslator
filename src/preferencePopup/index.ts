@@ -2,6 +2,7 @@ import tokens from '../textProcessing/tokens.json';
 import languages from './languages';
 import { getPrefs, Prefs, setPrefs } from './prefs';
 
+const versionEl = document.querySelector<HTMLInputElement>('#version')!;
 const commonWordsRangeInputEl = document.querySelector<HTMLInputElement>('.commonWordsRangeInput')!;
 const sourceLangSelectEl = document.querySelector<HTMLSelectElement>('.sourceLangSelect')!;
 const targetLangSelectEl = document.querySelector<HTMLSelectElement>('.targetLangSelect')!;
@@ -57,7 +58,6 @@ const prefsState = {
 
   get hideType(): 'most-common' | 'all' { return this._hideType; },
   set hideType(value: 'most-common' | 'all') {
-    console.log('value', value);
     this._hideType = value;
     if (value === 'all') {
       allWordsInputEl.checked = true;
@@ -125,6 +125,9 @@ function addLanguages(): void {
 
 addLanguages();
 applyPrefs();
+
+
+versionEl.innerHTML = `v${chrome.runtime.getManifest().version}`;
 
 sourceLangSelectEl.addEventListener('change', (event: Event) => {
   prefsState.sourceLang = (event.target as HTMLInputElement).value;

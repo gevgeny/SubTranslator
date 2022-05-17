@@ -66,7 +66,7 @@ export function getTranslationHTML(
           <div class="sub-tr-dict-item">
             <div class="sub-tr-dict-item-title">
               <span class="sub-tr-dict-item-text">${item.text ?? ''}</span>
-              <span class="sub-tr-dict-item-ts">[${item.ts ?? ''}]</span>
+              <span class="sub-tr-dict-item-ts">${item.ts ? `[${item.ts}]` : ''}</span>
               <span class="sub-tr-dict-item-pos">${item.pos?.text ?? ''}</span>
             </div>
             <ol class="sub-tr-dict-meaning">
