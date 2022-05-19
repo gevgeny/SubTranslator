@@ -1,5 +1,4 @@
-import elements = chrome.devtools.panels.elements;
-import {popupHeight, popupOffset, popupWidth} from "./markup";
+import { popupHeight, popupOffset, popupWidth } from './markup';
 
 export function isVisible(el?: HTMLElement | null) {
   if (!el) return false;

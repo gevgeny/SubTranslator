@@ -36,6 +36,13 @@ const siteApiMap: Record<string, SiteSpecificApi> = {
       document.querySelector<HTMLButtonElement>('#movie_player .ytp-play-button')?.click();
     }
   },
+  'open.spotify.com': {
+    getSubtitleElement: () => document.querySelector('.main-view-container__scroll-node-child>main[aria-label="Spotify"]>div>div>div')!,
+    getSubtitlePopupMountTarget: () => document.querySelector('.main-view-container__scroll-node-child>main[aria-label="Spotify"]')!,
+    pause: () => {
+      document.querySelector<HTMLButtonElement>('.player-controls button[aria-label="Pause"]')?.click();
+    }
+  },
 };
 
 export function getSiteSpecificApi() {
