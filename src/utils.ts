@@ -72,9 +72,7 @@ let stopScrollPosition: number | null = null;
 
 
 window.addEventListener('scroll', (e: Event) => {
-  console.log('target', e.target);
   if (stopScrollPosition !== null) {
-    console.log('stopScrollPosition', stopScrollPosition);
     window.scrollTo(window.scrollX, stopScrollPosition);
     e.stopImmediatePropagation();
   }
