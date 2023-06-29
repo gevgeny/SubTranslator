@@ -7,6 +7,7 @@ export const popupCss = `
     overflow-y: scroll;
     overscroll-behavior: contain;
     z-index: 100000;
+    color: white;
   }
   .sub-tr-popup::-webkit-scrollbar {
     width: 14px;

@@ -1,7 +1,7 @@
 {
   "name": "Subtitle Translator \uD83C\uDF0E",
   "version": "0.3.0",
-  "description": "Translate subtitles on Netflix, YouTube, kinopub \uD83C\uDDEC\uD83C\uDDE7\uD83C\uDDF7\uD83C\uDDFA\uD83C\uDDEA\uD83C\uDDF8\uD83C\uDDE9\uD83C\uDDEA\uD83C\uDDEB\uD83C\uDDF7",
+  "description": "Translate subtitles on Netflix, Disney Plus, YouTube, kinopub \uD83C\uDDEC\uD83C\uDDE7\uD83C\uDDF7\uD83C\uDDFA\uD83C\uDDEA\uD83C\uDDF8\uD83C\uDDE9\uD83C\uDDEA\uD83C\uDDEB\uD83C\uDDF7",
   "manifest_version": 2,
   "background": {
     "scripts": ["src/backgroundScript.ts"],
@@ -22,7 +22,7 @@
     "1024": "icons/icon1024.png"
   },
   "content_scripts": [{
-    "matches": ["*://*.netflix.com/*", "*://*.kino.pub/*", "*://*.youtube.com/*"],
+    "matches": ["*://*.netflix.com/*", "*://*.kino.pub/*", "*://*.youtube.com/*", "*://*.disneyplus.com/*"],
     "js": ["src/contentScript.ts"]
   }],
   "web_accessible_resources": [
@@ -33,6 +33,7 @@
     "https://www.netflix.com/*",
     "https://kino.pub/*",
     "https://www.youtube.com/*",
+    "https://www.disneyplus.com/*",
     "declarativeContent",
     "storage"
   ]
