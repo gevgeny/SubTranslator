@@ -38,6 +38,7 @@ function processSubtitlesElement(textNode: Text): void {
 }
 
 console.log(logPrefix, 'initialized');
+var selectOtherWord = false;
 
 // Observe subtitles change on a page and replace text nodes with hidden words
 // or with just custom nodes to make translation on mouseover easier
@@ -57,6 +58,7 @@ addMouseEnterLeaveEventListeners({
     const containerEl = siteApi.getSubtitlePopupMountTarget();
     const popupEl = insertTranslationPopup(subWordEl, containerEl);
 
+    selectOtherWord = true
     siteApi.pause();
 
     translate(subWordEl.innerText, sourceLang, targetLang).then((translation) => {
@@ -71,9 +73,15 @@ addMouseEnterLeaveEventListeners({
 
   // Hide translation popup
   onLeave: (subWordEl: HTMLElement) => {
+    selectOtherWord = false
     hideTranslationPopup();
     subWordEl.classList.remove(subWordReveal);
     cancelTranslate();
+    new Promise(r => setTimeout(r, 500))
+      .then(() => {
+        if (!selectOtherWord)
+            siteApi.play();
+      })
   },
 });
 
