@@ -1,13 +1,12 @@
 {
   "name": "Subtitle Translator \uD83C\uDF0E",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Translate subtitles on Netflix, YouTube, kinopub \uD83C\uDDEC\uD83C\uDDE7\uD83C\uDDF7\uD83C\uDDFA\uD83C\uDDEA\uD83C\uDDF8\uD83C\uDDE9\uD83C\uDDEA\uD83C\uDDEB\uD83C\uDDF7",
-  "manifest_version": 2,
+  "manifest_version": 3,
   "background": {
-    "scripts": ["src/backgroundScript.ts"],
-    "persistent": false
+    "service_worker": "src/backgroundScript.ts"
   },
-  "page_action": {
+  "action": {
     "default_icon": {
       "16": "icons/icon16.png",
       "32": "icons/icon32.png"
@@ -25,14 +24,16 @@
     "matches": ["*://*.netflix.com/*", "*://*.kino.pub/*", "*://*.youtube.com/*"],
     "js": ["src/contentScript.ts"]
   }],
-  "web_accessible_resources": [
-    "src/index.ts",
-    "src/index.css"
-  ],
-  "permissions": [
+  "web_accessible_resources": [{
+    "resources": ["src/index.ts", "src/index.css"],
+    "matches": ["<all_urls>"]
+  }],
+  "host_permissions": [
     "https://www.netflix.com/*",
     "https://kino.pub/*",
-    "https://www.youtube.com/*",
+    "https://www.youtube.com/*"
+  ],
+  "permissions": [
     "declarativeContent",
     "storage"
   ]

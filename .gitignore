@@ -1,6 +1,9 @@
+.idea
 .cache
+.parcel-cache
 build
 dist
+build.zip
 node_modules
 dist.crx
 dist.pem
