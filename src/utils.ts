@@ -1,4 +1,4 @@
-import { popupHeight, popupOffset, popupWidth } from './markup';
+import { popupHeight, popupVerticalOffset, popupWidth } from './markup';
 
 export function isVisible(el?: HTMLElement | null) {
   if (!el) return false;
@@ -48,14 +48,17 @@ export function fetchTextNodes(node: Node | Text): Text[] {
   return result;
 }
 
+/**
+ * Positions an element relative to the anchor element.
+ * */
 export function positionElement (element: HTMLElement, anchorElement: HTMLElement, fitElement: HTMLElement) {
   const gap = 5;
   const anchorElementRect = anchorElement.getBoundingClientRect();
   const fitElementRect = fitElement.getBoundingClientRect();
   let left = anchorElementRect.x - popupWidth / 2 + anchorElementRect.width / 2;
   const top = anchorElementRect.y > popupHeight
-    ? anchorElementRect.y - popupHeight - popupOffset
-    : anchorElementRect.y + anchorElementRect.height + popupOffset;
+    ? anchorElementRect.y - popupHeight - popupVerticalOffset
+    : anchorElementRect.y + anchorElementRect.height + popupVerticalOffset;
 
   if (left < fitElementRect.x) {
     left = fitElementRect.x + gap;

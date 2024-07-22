@@ -1,5 +1,6 @@
 interface TokenizeResult {
   tokens: string[];
+  indices: number[];
   delimiters: string[];
 }
 
@@ -7,20 +8,23 @@ interface TokenizeResult {
  * Split sentence into words and delimiters
  * */
 export const tokenize = (text: string): TokenizeResult => {
-  const word = /[a-z0-9'-]+/gi;
+  // regexp to match words on any language
+  const word = /[\p{L}0-9'-]+/giu;
   const tokens = [];
+  const indices = [];
   const delimiters = [];
   let item;
   let lastIndex = 0;
 
   while ((item = word.exec(text))) {
     tokens.push(item[0]);
+    indices.push(item.index);
     delimiters.push(text.substring(lastIndex, item.index));
     lastIndex = word.lastIndex;
   }
   delimiters.push(text.substring(lastIndex, text.length));
 
-  return { tokens, delimiters };
+  return { tokens, delimiters, indices };
 };
 
 /**

@@ -4,12 +4,12 @@ let selectedElement: HTMLElement | null = null;
 
 /**
  * Custom 'mouseenter' and 'mouseleave' addEventListener.
- * By means document.elementsFromPoint this implementation works even when other element overlaps the target.
+ * By means of document.elementsFromPoint this implementation works even when other element overlaps the target or when .
  * */
 export default function addMouseEnterLeaveEventListeners({
- targetElClassName, ignoreElClassName, onEnter, onLeave
+  selector, ignoreElClassName, onEnter, onLeave
 }: {
-  targetElClassName: string;
+  selector: string;
   ignoreElClassName: string;
   onEnter: (el: HTMLElement) => void;
   onLeave: (el: HTMLElement) => void;
@@ -20,7 +20,7 @@ export default function addMouseEnterLeaveEventListeners({
 
     if (ignoreElement) return;
 
-    const element = elementsUnderPointer.find(e => e.classList.contains(targetElClassName)) as HTMLElement;
+    const element = elementsUnderPointer.find(e => e.matches(selector)) as HTMLElement | undefined;
 
     if (element && selectedElement !== element) {
       if (selectedElement) {

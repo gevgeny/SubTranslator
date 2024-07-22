@@ -1,6 +1,7 @@
 import { isVisible } from './utils';
 
 interface SiteSpecificApi {
+  subtitleSelector: string;
   getSubtitleElement: () => HTMLElement;
   getSubtitlePopupMountTarget: () => HTMLElement;
   pause: () => void;
@@ -8,6 +9,7 @@ interface SiteSpecificApi {
 
 const siteApiMap: Record<string, SiteSpecificApi> = {
   'kino.pub': {
+    subtitleSelector: '.jw-captions',
     getSubtitleElement: () => document.querySelector<HTMLElement>('.jw-captions')!,
     getSubtitlePopupMountTarget: () => document.querySelector<HTMLElement>('#player')!,
     pause: () => {
@@ -20,6 +22,7 @@ const siteApiMap: Record<string, SiteSpecificApi> = {
     },
   },
   'www.netflix.com': {
+    subtitleSelector: '.player-timedtext-text-container',
     getSubtitleElement: () => document.querySelector<HTMLElement>('.player-timedtext')!,
     getSubtitlePopupMountTarget: () => document.querySelector<HTMLElement>('.watch-video')!,
     pause: () => {
@@ -29,6 +32,7 @@ const siteApiMap: Record<string, SiteSpecificApi> = {
     }
   },
   'www.youtube.com': {
+    subtitleSelector: '#ytd-player .captions-text',
     getSubtitleElement: () => document.querySelector('#movie_player .ytp-caption-window-container')!,
     getSubtitlePopupMountTarget: () => document.querySelector('#movie_player')!,
     pause: () => {
@@ -36,15 +40,18 @@ const siteApiMap: Record<string, SiteSpecificApi> = {
       document.querySelector<HTMLButtonElement>('#movie_player .ytp-play-button')?.click();
     }
   },
-  'open.spotify.com': {
-    getSubtitleElement: () => document.querySelector('.main-view-container__scroll-node-child>main[aria-label="Spotify"]>div>div>div')!,
-    getSubtitlePopupMountTarget: () => document.querySelector('.main-view-container__scroll-node-child>main[aria-label="Spotify"]')!,
+  'www.primevideo.com': {
+    subtitleSelector: '.atvwebplayersdk-captions-text',
+    getSubtitleElement: () => document.querySelector('.atvwebplayersdk-captions-overlay')!,
+    getSubtitlePopupMountTarget: () => document.querySelector('.atvwebplayersdk-player-container')!,
     pause: () => {
-      document.querySelector<HTMLButtonElement>('.player-controls button[aria-label="Pause"]')?.click();
+      console.log('pause', );
+      // console.log('btn', document.querySelector<HTMLButtonElement>('.atvwebplayersdk-overlays-container button[aria-label="Pause"]'));
+      // document.querySelector<HTMLButtonElement>('.atvwebplayersdk-overlays-container button[aria-label="Pause"]')?.click();
     }
-  },
+  }
 };
 
-export function getSiteSpecificApi() {
-    return siteApiMap[location.host];
+export function getSiteSpecificApi(host: string) {
+    return siteApiMap[host];
 }
