@@ -1,51 +1,85 @@
-import uniq from 'lodash-es/uniq';
-import { fetchTextNodes, logPrefix } from './utils';
+import uniq from "lodash-es/uniq";
+import { fetchTextNodes, logPrefix } from "./utils";
+import { subWordMaskClassName } from "./markup";
 
 let isObserving = false;
 let observer: MutationObserver | null = null;
 let observingElement: Element | null = null;
+
+const textNodes = new Map<Text, string>();
+
+interface Params {
+  containerSelector: string;
+  onTextAdded: (text: Text) => void;
+  onTextRemoved?: (text: Text) => void;
+  onTextChanged?: (text: Text) => void;
+}
 
 /**
  * Starts to observe text mutation under the target element.
  * Restarts every time when target element is available again.
  * */
 export default function startTextMutationObserver({
-  subtitleSelector,
-  onTextAppear,
-}: { subtitleSelector: string; onTextAppear: (text: Text) => void }
-): void {
-  const targetEl = document.querySelector<HTMLElement>(subtitleSelector);
+  containerSelector,
+  onTextAdded,
+  onTextRemoved,
+  onTextChanged,
+}: Params): void {
+  const targetEl = document.querySelector<HTMLElement>(containerSelector);
   if (!observer) {
-    observer = createTextMutationObserver(onTextAppear);
+    observer = createTextMutationObserver(onTextAdded);
   }
 
+  // Check if saved text nodes are removed or changed
+  textNodes.forEach((nodeText, node) => {
+    if (!targetEl?.contains(node)) {
+      textNodes.delete(node);
+      onTextRemoved?.(node);
+    } else if (nodeText !== node.textContent) {
+      textNodes.set(node, node.textContent ?? "");
+      onTextChanged?.(node);
+    }
+  });
+
   if (targetEl && !isObserving) {
-    console.log(logPrefix, 'start observing subtitles', targetEl);
+    console.log(logPrefix, "start observing text", targetEl);
     observingElement = targetEl;
     observer.observe(observingElement, { childList: true, subtree: true });
     isObserving = true;
   } else if (!targetEl && isObserving) {
-    console.log(logPrefix, 'stop observing subtitles');
+    console.log(logPrefix, "stop observing text");
     observer?.disconnect();
     isObserving = false;
   } else if (targetEl && targetEl !== observingElement) {
-    console.log(logPrefix, 'restart observing subtitles');
+    console.log(logPrefix, "restart observing text");
     observer.disconnect();
     observingElement = targetEl;
     observer.observe(observingElement, { childList: true, subtree: true });
   }
+
   // Restart observer if not started yet.
   // It is necessary if user changed a page with video and then came back
-  setTimeout(() => { startTextMutationObserver({ subtitleSelector, onTextAppear }); }, 200);
+  setTimeout(() => {
+    startTextMutationObserver({
+      containerSelector: containerSelector,
+      onTextAdded,
+      onTextRemoved,
+      onTextChanged,
+    });
+  }, 200);
 }
 
-function createTextMutationObserver(onTextAppear: (text: Text) => void): MutationObserver {
+function createTextMutationObserver(onTextAdded: (text: Text) => void): MutationObserver {
   return new MutationObserver((mutationsList: MutationRecord[]) => {
-    console.log('MutationObserver', mutationsList);
     const mutatedTextNodes = mutationsList
-      .filter(m => m.type === 'childList' && m.addedNodes.length)
+      .filter((m) => m.type === "childList" && m.addedNodes.length)
       .map((m) => Array.from(m.addedNodes).map(fetchTextNodes));
+
     const uniqTextNodes = uniq(mutatedTextNodes.flat().flat());
-    uniqTextNodes.forEach(onTextAppear);
+
+    uniqTextNodes.forEach((node) => {
+      textNodes.set(node, node.textContent ?? "");
+      onTextAdded(node);
+    });
   });
 }

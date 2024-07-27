@@ -4,7 +4,7 @@
   pointer-events: auto;
 }
 
-.sub-tr-processed-word {
+.sub-tr-word-hidden {
   filter: blur(0.2em);
   background-color: rgb(255, 255, 255);
   border-radius: 0.4em;
@@ -19,4 +19,14 @@
   filter: none;
   box-shadow: none;
   background-color: transparent;
+}
+
+.sub-tr-mask {
+  position: absolute;
+  pointer-events: auto;
+}
+.sub-tr-mask-hidden {
+  background-color: rgb(255, 255, 255);
+  border-radius: 2px;
+  transition: all .1s ease-in;
 }
