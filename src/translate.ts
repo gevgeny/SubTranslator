@@ -70,23 +70,37 @@ async function translateText(
   targetLang: string,
 ): Promise<TranslationResult> {
   translateController = new AbortController();
-  const url = `https://api.mymemory.translated.net/get?q=${text}&langpair=${sourceLang}|${targetLang}`;
-  const response = await fetch(url, { signal: translateController.signal });
-  const result = (await response.json()) as TranslationResponse;
-  const [matches1, matches2] = partition(result.matches, (match) => match['created-by'] === 'MT!');
+  try {
+    const url = `https://api.mymemory.translated.net/get?q=${text}&langpair=${sourceLang}|${targetLang}`;
+    const response = await fetch(url, { signal: translateController.signal });
+    if (!response.ok) throw new Error('Failed to fetch translation');
+    const result = (await response.json()) as TranslationResponse;
+    const [matches1, matches2] = partition(
+      result.matches,
+      (match) => match['created-by'] === 'MT!',
+    );
 
-  return { text, translations: [...matches1, ...matches2].map((match) => match.translation) };
+    return { text, translations: [...matches1, ...matches2].map((match) => match.translation) };
+  } catch (error) {
+    return { text, translations: [] };
+  }
 }
 
 async function lookupDictionary(
   text: string,
   sourceLang: string,
   targetLang: string,
-): Promise<DictionaryResponse> {
+): Promise<DictionaryResponse | null> {
   dictionaryController = new AbortController();
-  const url = `https://dictionary.yandex.net/dicservice.json/lookupMultiple?text=${text}&dict=${sourceLang}.syn%2Cen.ant%2Cen.deriv%2C${sourceLang}-${targetLang}.regular&flags=103`;
-  const response = await fetch(url, { signal: dictionaryController.signal });
-  return response.json();
+  try {
+    const url = `https://dictionary.yandex.net/dicservice.json/lookupMultiple?text=${text}&dict=${sourceLang}.syn%2Cen.ant%2Cen.deriv%2C${sourceLang}-${targetLang}.regular&flags=103`;
+    const response = await fetch(url, { signal: dictionaryController.signal });
+    if (!response.ok) throw new Error('Failed to fetch dictionary');
+
+    return response.json();
+  } catch (error) {
+    return null;
+  }
 }
 
 export async function translate(
@@ -96,7 +110,7 @@ export async function translate(
 ): Promise<DictionaryResponse | TranslationResult> {
   const dict = await lookupDictionary(text, sourceLang, targetLang);
 
-  if (isDictionaryResultEmpty(sourceLang, targetLang, dict)) {
+  if (!dict || isDictionaryResultEmpty(sourceLang, targetLang, dict)) {
     return translateText(text, sourceLang, targetLang);
   }
 
@@ -105,4 +119,5 @@ export async function translate(
 
 export function cancelTranslate(): void {
   dictionaryController?.abort();
+  translateController?.abort();
 }

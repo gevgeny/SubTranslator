@@ -152,7 +152,6 @@ addMouseEnterLeaveEventListeners({
 
   // Translate hovered word and show translation popup
   onEnter: (el: HTMLElement) => {
-    console.log('onEnter', el);
     el.classList.add(subWordReveal);
     const containerEl = document.querySelector<HTMLElement>(siteApi.subtitlePopupSelector);
 
@@ -179,7 +178,6 @@ addMouseEnterLeaveEventListeners({
 
   // Hide translation popup
   onLeave: (el: HTMLElement) => {
-    console.log('onLeave', el);
     hideTranslationPopup();
     el.classList.remove(subWordReveal);
     lastHoveredElement = null;
