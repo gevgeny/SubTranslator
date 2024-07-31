@@ -3,6 +3,7 @@
 .parcel-cache
 build
 dist
+dist.zip
 build.zip
 node_modules
 dist.crx

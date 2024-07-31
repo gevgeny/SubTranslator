@@ -1,7 +1,7 @@
-import { popupHeight, popupVerticalOffset, popupWidth } from "./markup";
+import { popupHeight, popupVerticalOffset, popupWidth } from './markup';
 
 export function createElementFromHTML(htmlString: string) {
-  const div = document.createElement("div");
+  const div = document.createElement('div');
   div.innerHTML = htmlString.trim();
 
   return div.firstChild;
@@ -11,25 +11,25 @@ export function isVisible(el?: HTMLElement | null) {
 
   const style = window.getComputedStyle(el);
   return (
-    style.width !== "0" &&
-    style.height !== "0" &&
-    style.opacity !== "0" &&
-    style.display !== "none" &&
-    style.visibility !== "hidden"
+    style.width !== '0' &&
+    style.height !== '0' &&
+    style.opacity !== '0' &&
+    style.display !== 'none' &&
+    style.visibility !== 'hidden'
   );
 }
 
 export function injectCss(path: string): void {
-  const link = document.createElement("link");
+  const link = document.createElement('link');
   link.href = chrome.runtime.getURL(path);
-  link.type = "text/css";
-  link.rel = "stylesheet";
-  document.getElementsByTagName("head")[0].appendChild(link);
+  link.type = 'text/css';
+  link.rel = 'stylesheet';
+  document.getElementsByTagName('head')[0].appendChild(link);
 }
 
 export async function injectJs(path: string): Promise<void> {
   return new Promise<void>((resolve) => {
-    const s = document.createElement("script");
+    const s = document.createElement('script');
     s.src = chrome.runtime.getURL(path);
     s.onload = function () {
       (this as HTMLScriptElement).remove();
@@ -86,7 +86,7 @@ export function positionElement(
 
 let stopScrollPosition: number | null = null;
 
-window.addEventListener("scroll", (e: Event) => {
+window.addEventListener('scroll', (e: Event) => {
   if (stopScrollPosition !== null) {
     window.scrollTo(window.scrollX, stopScrollPosition);
     e.stopImmediatePropagation();
@@ -101,4 +101,4 @@ export function enableScroll() {
   stopScrollPosition = null;
 }
 
-export const logPrefix = "\u001b[1;36m[Subtitle Translator \uD83C\uDF0E]";
+export const logPrefix = '\u001b[1;36m[Subtitle Translator \uD83C\uDF0E]';

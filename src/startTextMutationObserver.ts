@@ -1,6 +1,6 @@
-import uniq from "lodash-es/uniq";
-import { fetchTextNodes, logPrefix } from "./utils";
-import { subWordMaskClassName } from "./markup";
+import uniq from 'lodash-es/uniq';
+import { fetchTextNodes, logPrefix } from './utils';
+import { subWordMaskClassName } from './markup';
 
 let isObserving = false;
 let observer: MutationObserver | null = null;
@@ -36,22 +36,22 @@ export default function startTextMutationObserver({
       textNodes.delete(node);
       onTextRemoved?.(node);
     } else if (nodeText !== node.textContent) {
-      textNodes.set(node, node.textContent ?? "");
+      textNodes.set(node, node.textContent ?? '');
       onTextChanged?.(node);
     }
   });
 
   if (targetEl && !isObserving) {
-    console.log(logPrefix, "start observing text", targetEl);
+    console.log(logPrefix, 'start observing text');
     observingElement = targetEl;
     observer.observe(observingElement, { childList: true, subtree: true });
     isObserving = true;
   } else if (!targetEl && isObserving) {
-    console.log(logPrefix, "stop observing text");
+    console.log(logPrefix, 'stop observing text');
     observer?.disconnect();
     isObserving = false;
   } else if (targetEl && targetEl !== observingElement) {
-    console.log(logPrefix, "restart observing text");
+    console.log(logPrefix, 'restart observing text');
     observer.disconnect();
     observingElement = targetEl;
     observer.observe(observingElement, { childList: true, subtree: true });
@@ -71,14 +71,14 @@ export default function startTextMutationObserver({
 
 function createTextMutationObserver(onTextAdded: (text: Text) => void): MutationObserver {
   return new MutationObserver((mutationsList: MutationRecord[]) => {
-    const mutatedTextNodes = mutationsList
-      .filter((m) => m.type === "childList" && m.addedNodes.length)
+    const addedTextNodes = mutationsList
+      .filter((m) => m.type === 'childList' && m.addedNodes.length)
       .map((m) => Array.from(m.addedNodes).map(fetchTextNodes));
 
-    const uniqTextNodes = uniq(mutatedTextNodes.flat().flat());
+    const uniqTextNodes = uniq(addedTextNodes.flat(2));
 
     uniqTextNodes.forEach((node) => {
-      textNodes.set(node, node.textContent ?? "");
+      textNodes.set(node, node.textContent ?? '');
       onTextAdded(node);
     });
   });

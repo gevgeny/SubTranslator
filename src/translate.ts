@@ -48,14 +48,16 @@ export interface TranslationResult {
   translations: string[];
 }
 
-export function isTranslationResult(response: TranslationResult | DictionaryResponse): response is TranslationResult {
+export function isTranslationResult(
+  response: TranslationResult | DictionaryResponse,
+): response is TranslationResult {
   return 'translations' in response;
 }
 
 let dictionaryController: AbortController;
 let translateController: AbortController;
 
-function isDictionaryResultEmpty (
+function isDictionaryResultEmpty(
   sourceLang: string,
   targetLang: string,
   dict: DictionaryResponse,
@@ -70,11 +72,10 @@ async function translateText(
   translateController = new AbortController();
   const url = `https://api.mymemory.translated.net/get?q=${text}&langpair=${sourceLang}|${targetLang}`;
   const response = await fetch(url, { signal: translateController.signal });
-  const result = await response.json() as TranslationResponse;
-  const [matches1, matches2] = partition(result.matches, match => match['created-by'] === 'MT!');
+  const result = (await response.json()) as TranslationResponse;
+  const [matches1, matches2] = partition(result.matches, (match) => match['created-by'] === 'MT!');
 
-  return { text, translations: [...matches1, ...matches2].map(match => match.translation) };
-
+  return { text, translations: [...matches1, ...matches2].map((match) => match.translation) };
 }
 
 async function lookupDictionary(
@@ -93,7 +94,6 @@ export async function translate(
   sourceLang: string,
   targetLang: string,
 ): Promise<DictionaryResponse | TranslationResult> {
-
   const dict = await lookupDictionary(text, sourceLang, targetLang);
 
   if (isDictionaryResultEmpty(sourceLang, targetLang, dict)) {
