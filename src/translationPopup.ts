@@ -1,11 +1,14 @@
 import {
   getPopupHTML,
+  getTranslationHTML,
   subLoadingClassName,
   subPopupClassName,
   subPopupWrapperClassName,
 } from './markup';
-import { popupCss, spinnerCss } from './styles';
-import { disableScroll, enableScroll, positionElement } from './utils';
+// @ts-ignore
+import styles from 'bundle-text:./translationPopup.css';
+import { positionElement } from './utils';
+import { DictionaryResponse, TranslationResult } from './translate';
 
 export function insertTranslationPopup(
   targetEl: HTMLElement,
@@ -15,7 +18,7 @@ export function insertTranslationPopup(
   shadowDomWrapperEl.classList.add(subPopupWrapperClassName);
   const shadow = shadowDomWrapperEl.attachShadow({ mode: 'open' });
   const style = document.createElement('style');
-  style.textContent = popupCss + spinnerCss;
+  style.textContent = styles;
 
   shadow.innerHTML = getPopupHTML();
   shadow.appendChild(style);
@@ -26,9 +29,15 @@ export function insertTranslationPopup(
   return popupEl;
 }
 
-export function insertTranslationResult(translationPopupEl: HTMLElement, translatingHTML: string) {
+export function insertTranslationResult(
+  translationPopupEl: HTMLElement,
+  translation: DictionaryResponse | TranslationResult,
+  sourceLang: string,
+  targetLang: string,
+) {
+  const html = getTranslationHTML(translation, sourceLang, targetLang);
   translationPopupEl.querySelector(`.${subLoadingClassName}`)?.remove();
-  translationPopupEl.insertAdjacentHTML('beforeend', translatingHTML);
+  translationPopupEl.insertAdjacentHTML('beforeend', html);
 }
 
 export function hideTranslationPopup() {

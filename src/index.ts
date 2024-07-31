@@ -15,7 +15,6 @@ import { defaultPrefs, Prefs } from './preferencePopup/prefs';
 import {
   subWordClassName,
   subContainerClassName,
-  getTranslationHTML,
   subWordReveal,
   getSubtitlesWordHTML,
   getSubtitlesHiddenWordHTML,
@@ -26,7 +25,6 @@ import {
 import startTextMutationObserver from './startTextMutationObserver';
 import { getSiteSpecificApi } from './siteApi';
 import { createElementFromHTML, logPrefix, positionElement } from './utils';
-import debounce from 'lodash-es/debounce';
 
 const siteApi = getSiteSpecificApi(location.host);
 let sourceLang: string = defaultPrefs.sourceLang;
@@ -124,6 +122,18 @@ function playVideo() {
   }, 300);
 }
 
+function translateWord(el: HTMLElement, popupEl: HTMLElement) {
+  translate(el.dataset['word'] ?? el.innerText, sourceLang, targetLang)
+    .then((translation) => {
+      insertTranslationResult(popupEl, translation, sourceLang, targetLang);
+    })
+    .catch((error) => {
+      if (error.name !== 'AbortError') {
+        throw error;
+      }
+    });
+}
+
 // Observe subtitles change on a page and replace text nodes with hidden words
 // or with just custom nodes to make translation on mouseover easier
 if (siteApi.subtitleTransformType === 'mask') {
@@ -145,7 +155,7 @@ if (siteApi.subtitleTransformType === 'mask') {
   });
 }
 
-// Toggle the popup with translation on mouseenter/mouseleave a word in the subtitles.
+// Show/hide the popup with translation on mousehover of a word in the subtitles.
 addMouseEnterLeaveEventListeners({
   selector: `.${subWordClassName}, .${subWordMaskClassName}`,
   ignoreElClassName: subPopupWrapperClassName,
@@ -163,17 +173,7 @@ addMouseEnterLeaveEventListeners({
 
     isVideoPaused = isVideoPaused || siteApi.pause();
     clearTimeout(videoPlayTimer);
-
-    translate(el.dataset['word'] ?? el.innerText, sourceLang, targetLang)
-      .then((translation) => {
-        const html = getTranslationHTML(translation, sourceLang, targetLang);
-        insertTranslationResult(popupEl, html);
-      })
-      .catch((error) => {
-        if (error.name !== 'AbortError') {
-          throw error;
-        }
-      });
+    translateWord(el, popupEl);
   },
 
   // Hide translation popup
@@ -202,8 +202,8 @@ document.addEventListener('prefs', (event: CustomEvent<Prefs>) => {
 });
 
 setInterval(() => {
-  // Keep the position of the translation popup actual because it has "position: fixed"
-  // and subtitles can be moved.
+  // Keep the position of the translation popup actual
+  // because it has "position: fixed" and subtitles can be moved.
   adjustTranslationPopupPosition();
 }, 200);
 
