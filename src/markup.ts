@@ -91,7 +91,7 @@ export function getWordMaskHTML(targetElementRect: DOMRect, wordMask: WordMask) 
   const { rect, word, isHidden } = wordMask;
 
   return `
-    <div 
+    <div
       class="${subWordMaskClassName} ${isHidden ? subWordMaskHiddenClassName : ''}"
       data-word="${word}" 
       style=" 
@@ -100,5 +100,11 @@ export function getWordMaskHTML(targetElementRect: DOMRect, wordMask: WordMask) 
         width: ${rect.width}px; 
         height: ${rect.height - 2}px;
       "/>
+  `;
+}
+
+export function getWordWrapperHTML(word: string) {
+  return `
+    <span class="${subContainerClassName}">${word}</span>
   `;
 }

@@ -1,7 +1,6 @@
 import { getPrefs } from './preferencePopup/prefs';
 import { injectCss, injectJs } from './utils';
 
-
 function sendCurrentPrefsToInjectedScripts(): void {
   getPrefs((prefs) => {
     document.dispatchEvent(new CustomEvent('prefs', { detail: prefs }));
@@ -17,6 +16,3 @@ chrome.runtime.onMessage.addListener((msg) => {
     sendCurrentPrefsToInjectedScripts();
   }
 });
-
-
-

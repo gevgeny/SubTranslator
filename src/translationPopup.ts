@@ -7,7 +7,7 @@ import {
 } from './markup';
 // @ts-ignore
 import styles from 'bundle-text:./translationPopup.css';
-import { positionElement } from './utils';
+import { positionElement, toTrustedHTML } from './utils';
 import { DictionaryResponse, TranslationResult } from './translate';
 
 export function insertTranslationPopup(
@@ -20,7 +20,7 @@ export function insertTranslationPopup(
   const style = document.createElement('style');
   style.textContent = styles;
 
-  shadow.innerHTML = getPopupHTML();
+  shadow.innerHTML = toTrustedHTML(getPopupHTML());
   shadow.appendChild(style);
   containerEl.appendChild(shadowDomWrapperEl);
 
@@ -37,7 +37,7 @@ export function insertTranslationResult(
 ) {
   const html = getTranslationHTML(translation, sourceLang, targetLang);
   translationPopupEl.querySelector(`.${subLoadingClassName}`)?.remove();
-  translationPopupEl.insertAdjacentHTML('beforeend', html);
+  translationPopupEl.insertAdjacentHTML('beforeend', toTrustedHTML(html));
 }
 
 export function hideTranslationPopup() {

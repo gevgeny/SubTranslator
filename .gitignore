@@ -6,5 +6,6 @@ dist
 dist.zip
 build.zip
 node_modules
+parcel-bundle-reports
 dist.crx
 dist.pem

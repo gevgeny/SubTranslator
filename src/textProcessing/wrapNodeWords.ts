@@ -1,6 +1,6 @@
-import { detokenize, tokenize } from "./tokenize";
-import posTagger from "wink-pos-tagger";
-import tokens from "./tokens.json";
+import { detokenize, tokenize } from './tokenize';
+import posTagger from 'wink-pos-tagger';
+import tokens from './tokens.json';
 
 export interface ProcessResult {
   initialText: string;
@@ -24,15 +24,15 @@ let wordsToHide: Set<string> = new Set();
 let hideAllWords = false;
 
 export const updateWordsToHide = (
-  hideWords: boolean,
+  shouldHideWords: boolean,
   count: number,
   includeContractions: boolean,
   includeInformalContractions: boolean,
-  hideType: "most-common" | "all",
+  hideType: 'most-common' | 'all',
 ) => {
-  hideAllWords = hideWords && hideType === "all";
+  hideAllWords = shouldHideWords && hideType === 'all';
   if (hideAllWords) return;
-  if (!hideWords) {
+  if (!shouldHideWords) {
     wordsToHide = new Set();
     return;
   }
@@ -70,7 +70,7 @@ export const wrapNodeWords = (
   wrapWord: (word: string) => string,
   wrapHiddenWord: (word: string) => string,
 ) => {
-  const initialText = textNode.textContent! ?? "";
+  const initialText = textNode.textContent! ?? '';
   const { tokens, delimiters } = tokenize(initialText);
   const processedTokens = hideWords(tokens);
   const text = detokenize(processedTokens, delimiters, wrapWord, wrapHiddenWord);

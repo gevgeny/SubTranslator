@@ -1,11 +1,14 @@
 import { popupHeight, popupVerticalOffset, popupWidth } from './markup';
+import debounce from 'lodash-es/debounce';
+
+export const logPrefix = '\u001b[1;36m[Subtitle Translator \uD83C\uDF0E]';
 
 export function createElementFromHTML(htmlString: string) {
   const div = document.createElement('div');
-  div.innerHTML = htmlString.trim();
-
-  return div.firstChild;
+  div.innerHTML = toTrustedHTML(htmlString.trim());
+  return div.firstChild as HTMLElement;
 }
+
 export function isVisible(el?: HTMLElement | null) {
   if (!el) return false;
 
@@ -101,4 +104,57 @@ export function enableScroll() {
   stopScrollPosition = null;
 }
 
-export const logPrefix = '\u001b[1;36m[Subtitle Translator \uD83C\uDF0E]';
+/**
+ * Custom 'mouseenter' and 'mouseleave' addEventListener.
+ * By means of document.elementsFromPoint this implementation works even when other element overlaps the target or when .
+ * */
+export default function addMouseEnterLeaveEventListeners({
+  selector,
+  ignoreElClassName,
+  onEnter,
+  onLeave,
+}: {
+  selector: string;
+  ignoreElClassName: string;
+  onEnter: (el: HTMLElement) => void;
+  onLeave: (el: HTMLElement) => void;
+}) {
+  let selectedElement: HTMLElement | null = null;
+
+  document.addEventListener(
+    'mousemove',
+    debounce((event) => {
+      const elementsUnderPointer = document.elementsFromPoint(event.clientX, event.clientY);
+      const ignoreElement = elementsUnderPointer.find((e) =>
+        e.classList.contains(ignoreElClassName),
+      ) as HTMLElement;
+
+      if (ignoreElement) return;
+
+      const element = elementsUnderPointer.find((e) => e.matches(selector)) as
+        | HTMLElement
+        | undefined;
+
+      if (element && selectedElement !== element) {
+        if (selectedElement) {
+          onLeave(selectedElement);
+        }
+        onEnter(element);
+        selectedElement = element;
+      }
+      if (!element && selectedElement) {
+        onLeave(selectedElement);
+        selectedElement = null;
+      }
+    }, 10),
+  );
+}
+
+export function toTrustedHTML(htmlString: string) {
+  // @ts-ignore
+  const renderPolicy = window.trustedTypes.createPolicy('render-policy', {
+    createHTML: (input: string) => input,
+  });
+
+  return renderPolicy.createHTML(htmlString);
+}

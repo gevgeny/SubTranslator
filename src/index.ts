@@ -4,7 +4,6 @@ import {
   maskTextWords,
   WordMask,
 } from './textProcessing/wrapNodeWords';
-import addMouseEnterLeaveEventListeners from './addMouseEnterLeaveEventListeners';
 import { translate, cancelTranslate } from './translate';
 import {
   insertTranslationPopup,
@@ -21,14 +20,19 @@ import {
   subPopupWrapperClassName,
   getWordMaskHTML,
   subWordMaskClassName,
+  getWordWrapperHTML,
 } from './markup';
 import startTextMutationObserver from './startTextMutationObserver';
 import { getSiteSpecificApi } from './siteApi';
-import { createElementFromHTML, logPrefix, positionElement } from './utils';
+import addMouseEnterLeaveEventListeners, {
+  createElementFromHTML,
+  logPrefix,
+  positionElement,
+} from './utils';
 
 const siteApi = getSiteSpecificApi(location.host);
-let sourceLang: string = defaultPrefs.sourceLang;
-let targetLang: string = defaultPrefs.targetLang;
+let sourceLang = defaultPrefs.sourceLang;
+let targetLang = defaultPrefs.targetLang;
 
 const subtitleMasks = new Map<Text, HTMLElement[]>();
 let lastHoveredElement: HTMLElement | null = null;
@@ -52,11 +56,8 @@ function wrapWordsInTextElement(textNode: Text): void {
     getSubtitlesWordHTML,
     getSubtitlesHiddenWordHTML,
   ).text;
-  const span = document.createElement('span');
-
-  span.className = subContainerClassName;
-  span.innerHTML = processedText;
-  textNode.parentElement!.replaceChild(span, textNode);
+  const wrappedText = createElementFromHTML(getWordWrapperHTML(processedText));
+  textNode.parentElement!.replaceChild(wrappedText, textNode);
 }
 
 function insertWordMasksInDOM(targetElement: HTMLElement, wordMasks: WordMask[]) {
@@ -65,7 +66,7 @@ function insertWordMasksInDOM(targetElement: HTMLElement, wordMasks: WordMask[])
 
   wordMasks.forEach((wordMask) => {
     const maskHTML = getWordMaskHTML(targetElementRect, wordMask);
-    const maskElement = createElementFromHTML(maskHTML) as HTMLElement;
+    const maskElement = createElementFromHTML(maskHTML);
     targetElement.appendChild(maskElement);
     rectElements.push(maskElement);
   });
@@ -75,7 +76,9 @@ function insertWordMasksInDOM(targetElement: HTMLElement, wordMasks: WordMask[])
 
 function addWordMasks(textNode: Text) {
   const containerEl = document.querySelector<HTMLElement>(
-    siteApi.maskContainerSelector ?? siteApi.subtitleSelector,
+    'maskContainerSelector' in siteApi
+      ? siteApi.maskContainerSelector
+      : siteApi.subtitleSelector,
   );
   if (!containerEl) return;
 
@@ -97,7 +100,9 @@ function removeWordMasks(textNode: Text) {
 
 function adjustTranslationPopupPosition() {
   const containerEl = document.querySelector<HTMLElement>(siteApi.subtitlePopupSelector);
-  const popupWrapperEl = document.querySelector<HTMLElement>(`.${subPopupWrapperClassName}`);
+  const popupWrapperEl = document.querySelector<HTMLElement>(
+    `.${subPopupWrapperClassName}`,
+  );
 
   if (
     !containerEl ||
@@ -163,7 +168,9 @@ addMouseEnterLeaveEventListeners({
   // Translate hovered word and show translation popup
   onEnter: (el: HTMLElement) => {
     el.classList.add(subWordReveal);
-    const containerEl = document.querySelector<HTMLElement>(siteApi.subtitlePopupSelector);
+    const containerEl = document.querySelector<HTMLElement>(
+      siteApi.subtitlePopupSelector,
+    );
 
     if (!containerEl) return;
 

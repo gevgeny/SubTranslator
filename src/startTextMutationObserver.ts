@@ -30,12 +30,13 @@ export default function startTextMutationObserver({
     observer = createTextMutationObserver(onTextAdded);
   }
 
-  // Check if saved text nodes are removed or changed
   textNodes.forEach((nodeText, node) => {
+    // Remove node if it was removed from the DOM
     if (!targetEl?.contains(node)) {
       textNodes.delete(node);
       onTextRemoved?.(node);
     } else if (nodeText !== node.textContent) {
+      // Update node if its text was changed.
       textNodes.set(node, node.textContent ?? '');
       onTextChanged?.(node);
     }
@@ -66,7 +67,7 @@ export default function startTextMutationObserver({
       onTextRemoved,
       onTextChanged,
     });
-  }, 200);
+  }, 50);
 }
 
 function createTextMutationObserver(onTextAdded: (text: Text) => void): MutationObserver {
