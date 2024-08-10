@@ -3,16 +3,24 @@ import languages from './languages';
 import { getPrefs, Prefs, setPrefs } from './prefs';
 
 const versionEl = document.querySelector<HTMLInputElement>('#version')!;
-const commonWordsRangeInputEl = document.querySelector<HTMLInputElement>('.commonWordsRangeInput')!;
-const sourceLangSelectEl = document.querySelector<HTMLSelectElement>('.sourceLangSelect')!;
-const targetLangSelectEl = document.querySelector<HTMLSelectElement>('.targetLangSelect')!;
+const commonWordsRangeInputEl = document.querySelector<HTMLInputElement>(
+  '.commonWordsRangeInput',
+)!;
+const sourceLangSelectEl =
+  document.querySelector<HTMLSelectElement>('.sourceLangSelect')!;
+const targetLangSelectEl =
+  document.querySelector<HTMLSelectElement>('.targetLangSelect')!;
 const hideWordsInputEl = document.querySelector<HTMLInputElement>('.commonWordsInput')!;
-const contractionsWordsInputEl =
-  document.querySelector<HTMLInputElement>('.contractionsWordsInput')!;
-const informalWordsInputEl = document.querySelector<HTMLInputElement>('.informalWordsInput')!;
+const hideWordsSectionEl = document.querySelector<HTMLInputElement>('.hideWordsSection')!;
+const contractionsWordsInputEl = document.querySelector<HTMLInputElement>(
+  '.contractionsWordsInput',
+)!;
+const informalWordsInputEl =
+  document.querySelector<HTMLInputElement>('.informalWordsInput')!;
 const fieldsetEl = document.querySelector<HTMLFieldSetElement>('.fieldset')!;
-const mostFrequentWordsInputEl =
-  document.querySelector<HTMLInputElement>('.mostFrequentWordsInput')!;
+const mostFrequentWordsInputEl = document.querySelector<HTMLInputElement>(
+  '.mostFrequentWordsInput',
+)!;
 const allWordsInputEl = document.querySelector<HTMLInputElement>('.allWordsInputInput')!;
 const mostFrequentWordsFieldsetEl = document.querySelector<HTMLFieldSetElement>(
   '.mostFrequentWordsFieldset',
@@ -44,6 +52,7 @@ const prefsState = {
     hideWordsInputEl.checked = value;
     fieldsetEl.disabled = !value;
     this.updateWordCount();
+    hideWordsSectionEl.classList.toggle('hideWordsSectionOpen', value);
   },
 
   get contractions(): boolean {

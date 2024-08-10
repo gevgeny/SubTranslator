@@ -123,8 +123,8 @@ export default function addMouseEnterLeaveEventListeners({
 
   document.addEventListener(
     'mousemove',
-    debounce((event) => {
-      const elementsUnderPointer = document.elementsFromPoint(event.clientX, event.clientY);
+    debounce(({ clientX, clientY }) => {
+      const elementsUnderPointer = document.elementsFromPoint(clientX, clientY);
       const ignoreElement = elementsUnderPointer.find((e) =>
         e.classList.contains(ignoreElClassName),
       ) as HTMLElement;

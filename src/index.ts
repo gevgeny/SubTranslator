@@ -177,7 +177,6 @@ addMouseEnterLeaveEventListeners({
     const popupEl = insertTranslationPopup(el, containerEl);
     lastTranslationPopup = popupEl;
     lastHoveredElement = el;
-
     isVideoPaused = isVideoPaused || siteApi.pause();
     clearTimeout(videoPlayTimer);
     translateWord(el, popupEl);
@@ -206,12 +205,14 @@ document.addEventListener('prefs', (event: CustomEvent<Prefs>) => {
   );
   sourceLang = prefs.sourceLang;
   targetLang = prefs.targetLang;
+
+  console.log(logPrefix, 'prefs updated:', prefs);
 });
 
 setInterval(() => {
   // Keep the position of the translation popup actual
   // because it has "position: fixed" and subtitles can be moved.
   adjustTranslationPopupPosition();
-}, 200);
+}, 100);
 
 console.log(logPrefix, 'initialized');

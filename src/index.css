@@ -10,7 +10,7 @@
   border-radius: 0.4em;
   transform: scale(0.9, 0.6);
   transform-origin: center center;
-  transition: all .1s ease-in;
+  /*transition: all .1s ease-in;*/
 }
 
 .sub-tr-mask {

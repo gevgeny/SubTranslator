@@ -7,6 +7,7 @@
   <style>
     body {
       width: 420px;
+      user-select: none;
     }
     fieldset {
       border: none;
@@ -27,15 +28,28 @@
     }
     select {
       display: inline;
+      margin: 8px;
     }
 
+    .hideWordsSection {
+      /*background: var(--background-alt);*/
+      height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: height 0.1s ease-out, opacity 0.1s ease-out;
+    }
+    .hideWordsSectionOpen {
+      padding: 8px;
+      height: 144px;
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
+  <h2>Subtitle Translator 🌎</h2>
   <sub id="version" style="color: gray;position: absolute;right: 0.5rem;top: 0.5rem;"></sub>
-  <h2>Options</h2>
   <p>
-    Translate from <select class="sourceLangSelect"></select> to <select class="targetLangSelect"></select>
+    <span>Translate from</span><select class="sourceLangSelect"></select><span>to</span><select class="targetLangSelect"></select>
   </p>
   <hr>
   <p>
@@ -47,12 +61,17 @@
 
   <div>
     <form>
-      <fieldset disabled="disabled" class="fieldset">
-        <label>
-          <input type="radio" class="mostFrequentWordsInput" name="words" value="most-common">
-          Only most frequent English words ranked by popularity
-        </label>
-
+      <fieldset disabled="disabled" class="fieldset hideWordsSection">
+        <div style="display: flex">
+          <label>
+            <input type="radio" class="mostFrequentWordsInput" name="words" value="most-common">
+            Most frequent
+          </label>
+          <label style="padding-left: 16px">
+            <input type="radio" class="allWordsInputInput" name="words" value="all">
+            All
+          </label>
+        </div>
         <fieldset class="mostFrequentWordsFieldset">
           <label style="justify-content: space-between">
             <input
@@ -72,11 +91,6 @@
             </label>
           </div>
         </fieldset>
-
-        <label>
-          <input type="radio" class="allWordsInputInput" name="words" value="all">
-          All words
-        </label>
         <div style="display: flex; justify-content: flex-end; padding: 0.5rem 0;">
           Hidden words: &nbsp<b class="wordCount">0</b>
         </div>
@@ -85,7 +99,7 @@
   </div>
   <hr>
   <ul style="padding-left: 16px">
-    <li><a target="_blank" href="https://github.com/gevgeny/SubTranslator/issues/new">Report a bug or ask about an improvement</a></li>
+    <li><a target="_blank" href="https://github.com/gevgeny/SubTranslator/issues/new">Ask for improvement or report a bug</a></li>
   </ul>
   <script src="./index.ts" type="module"></script>
 </body>

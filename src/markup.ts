@@ -1,8 +1,8 @@
 import { DictionaryResponse, isTranslationResult, TranslationResult } from './translate';
 import { WordMask } from './textProcessing/wrapNodeWords';
 
-export const popupWidth = 200;
-export const popupHeight = 150;
+export const popupWidth = 240;
+export const popupHeight = 180;
 export const popupVerticalOffset = 3;
 export const subContainerClassName = 'sub-tr-text';
 export const subWordClassName = 'sub-tr-word';

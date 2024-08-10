@@ -1,6 +1,6 @@
 .sub-tr-popup {
   background: #262626;
-  border-radius: 3px;
+  border-radius: 10px;
   position: fixed;
   overflow-y: scroll;
   overscroll-behavior: contain;
@@ -20,7 +20,7 @@
 
 .sub-tr-popup-content {
   padding: 16px;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .sub-tr-dict-item-text {
