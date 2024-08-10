@@ -31,7 +31,7 @@ const siteApiMap = {
   },
   'www.netflix.com': {
     subtitleTransformType: 'replace',
-    subtitleSelector: '.player-timedtext',
+    subtitleSelector: '.player-timedtext:not(.billboard .player-timedtext)',
     subtitlePopupSelector: '.watch-video',
     pause() {
       if (
