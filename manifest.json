@@ -1,6 +1,6 @@
 {
   "name": "Subtitle Translator \uD83C\uDF0E",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Translate subtitles instantly while you watch on Netflix, Amazon Prime Video, YouTube, and Kinopub.  \uD83C\uDDEC\uD83C\uDDE7\uD83C\uDDEA\uD83C\uDDF8\uD83C\uDDE9\uD83C\uDDEA\uD83C\uDDEB\uD83C\uDDF7\uD83C\uDDEE\uD83C\uDDF9\uD83C\uDDF7\uD83C\uDDFA",
   "manifest_version": 3,
   "background": {

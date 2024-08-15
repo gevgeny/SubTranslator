@@ -174,7 +174,7 @@ addMouseEnterLeaveEventListeners({
 
     if (!containerEl) return;
 
-    const popupEl = insertTranslationPopup(el, containerEl);
+    const popupEl = insertTranslationPopup(el, containerEl, siteApi.popupOffsetBottom);
     lastTranslationPopup = popupEl;
     lastHoveredElement = el;
     isVideoPaused = isVideoPaused || siteApi.pause();

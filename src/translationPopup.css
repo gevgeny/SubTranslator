@@ -1,15 +1,13 @@
 .sub-tr-popup {
-  background: #262626;
-  border-radius: 10px;
   position: fixed;
-  overflow-y: scroll;
   overscroll-behavior: contain;
   z-index: 100000;
 }
 .sub-tr-popup::-webkit-scrollbar {
   width: 14px;
   height: 14px;
-  background-color: transparent; /* or add it to the track */
+  margin-right: 4px;
+  background-color: transparent;
 }
 .sub-tr-popup::-webkit-scrollbar-thumb {
   background: #aaa;
@@ -17,6 +15,17 @@
   border: 4px solid transparent;
   background-clip: content-box;
 }
+
+.sub-tr-popup-container {
+  border: 1px solid #383838;
+  overflow-y: scroll;
+  overscroll-behavior: contain;
+  backdrop-filter: blur(8px);
+  background: rgba(38, 38, 38, 0.9);
+  border-radius: 10px;
+  box-shadow: 0 12px 12px #00000047;
+}
+
 
 .sub-tr-popup-content {
   padding: 16px;

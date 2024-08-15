@@ -1,6 +1,7 @@
 interface SubtitleApi {
   subtitleSelector: string;
   subtitlePopupSelector: string;
+  popupOffsetBottom?: number;
   pause: () => boolean;
   play: () => void;
 }
@@ -53,6 +54,7 @@ const siteApiMap = {
     subtitleTransformType: 'replace',
     subtitleSelector: '#movie_player .ytp-caption-window-container',
     subtitlePopupSelector: '#movie_player',
+    popupOffsetBottom: 6,
     pause() {
       if (document.querySelector<HTMLVideoElement>('#movie_player video')?.paused)
         return false;
@@ -85,12 +87,15 @@ type Host = keyof typeof siteApiMap;
 function isAllowedHost(host: string): host is Host {
   return host in siteApiMap;
 }
-export function getSiteSpecificApi(host: string) {
+export function getSiteSpecificApi(
+  host: string,
+): SubtitleApiWithReplace | SubtitleApiWithMask {
   if (isAllowedHost(host)) return siteApiMap[host];
   return {
     subtitleTransformType: 'replace',
     subtitleSelector: '',
     subtitlePopupSelector: '',
+    popupOffsetBottom: 0,
     pause: () => false,
     play: () => undefined,
   };

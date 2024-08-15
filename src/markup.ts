@@ -1,9 +1,9 @@
 import { DictionaryResponse, isTranslationResult, TranslationResult } from './translate';
 import { WordMask } from './textProcessing/wrapNodeWords';
 
-export const popupWidth = 240;
-export const popupHeight = 120;
-export const popupVerticalOffset = 3;
+export const popupWidth = 220;
+export const popupHeight = 140;
+export const popupVerticalOffset = 0;
 export const subContainerClassName = 'sub-tr-text';
 export const subWordClassName = 'sub-tr-word';
 export const subWordMaskClassName = 'sub-tr-mask';
@@ -24,11 +24,13 @@ export function getSubtitlesHiddenWordHTML(word: string) {
   return `<span class="${subWordClassName} ${subWordHiddenClassName}">${word}</span>`;
 }
 
-export function getPopupHTML() {
+export function getPopupHTML(offsetBottom: number) {
   return `
     <div class="${subPopupClassName}" style="width: ${popupWidth}px; height: ${popupHeight}px;">
-      <div class="${subLoadingClassName}">
-        ${spinnerHTML}
+      <div class="sub-tr-popup-container" style="height: ${popupHeight - offsetBottom}px">
+        <div class="${subLoadingClassName}">
+          ${spinnerHTML}
+        </div>
       </div>
     </div>
   `;
@@ -41,20 +43,20 @@ export function getTranslationHTML(
 ) {
   if (isTranslationResult(dictResponse)) {
     return `
-      <div class="sub-tr-popup-content">
-        <div class="sub-tr-dict">
-          <div class="sub-tr-dict-item">
-            <div class="sub-tr-dict-item-title">
-              <span class="sub-tr-dict-item-text">${dictResponse.text}</span>
+        <div class="sub-tr-popup-content">
+          <div class="sub-tr-dict">
+            <div class="sub-tr-dict-item">
+              <div class="sub-tr-dict-item-title">
+                <span class="sub-tr-dict-item-text">${dictResponse.text}</span>
+              </div>
+              <ol class="sub-tr-dict-meaning">
+              ${dictResponse.translations
+                .map((tr) => `<li class="sub-tr-dict-meaning-item">${tr}</li>`)
+                .join('')}
+              </ol>
             </div>
-            <ol class="sub-tr-dict-meaning">
-            ${dictResponse.translations
-              .map((tr) => `<li class="sub-tr-dict-meaning-item">${tr}</li>`)
-              .join('')}
-            </ol>
           </div>
         </div>
-      </div>
     `;
   }
 

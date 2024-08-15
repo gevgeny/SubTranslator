@@ -13,6 +13,7 @@ import { DictionaryResponse, TranslationResult } from './translate';
 export function insertTranslationPopup(
   targetEl: HTMLElement,
   containerEl: HTMLElement,
+  offsetBottom: number = 4,
 ): HTMLElement {
   const shadowDomWrapperEl = document.createElement('div');
   shadowDomWrapperEl.classList.add(subPopupWrapperClassName);
@@ -20,7 +21,7 @@ export function insertTranslationPopup(
   const style = document.createElement('style');
   style.textContent = styles;
 
-  shadow.innerHTML = toTrustedHTML(getPopupHTML());
+  shadow.innerHTML = toTrustedHTML(getPopupHTML(offsetBottom));
   shadow.appendChild(style);
   containerEl.appendChild(shadowDomWrapperEl);
 
@@ -36,8 +37,9 @@ export function insertTranslationResult(
   targetLang: string,
 ) {
   const html = getTranslationHTML(translation, sourceLang, targetLang);
-  translationPopupEl.querySelector(`.${subLoadingClassName}`)?.remove();
-  translationPopupEl.insertAdjacentHTML('beforeend', toTrustedHTML(html));
+  const loaderEl = translationPopupEl.querySelector(`.${subLoadingClassName}`);
+  loaderEl?.insertAdjacentHTML('afterend', toTrustedHTML(html));
+  loaderEl?.remove();
 }
 
 export function hideTranslationPopup() {
