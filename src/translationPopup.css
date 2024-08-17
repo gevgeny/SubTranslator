@@ -65,7 +65,7 @@
 
 .sub-tr-close-icon {
   z-index: 1;
-  fill: #eeeeee87;
+  fill: transparent;
   cursor: default;
   width: 14px;
   height: 14px;
@@ -75,8 +75,11 @@
   right: 14px;
   fill-rule: evenodd;
 }
+.sub-tr-popup:hover .sub-tr-close-icon {
+  fill: #eeeeee87;
+}
 
-.sub-tr-close-icon:hover {
+.sub-tr-popup:hover .sub-tr-close-icon:hover {
   fill: #eeeeee;
 }
 
