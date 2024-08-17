@@ -13,7 +13,8 @@ import { DictionaryResponse, TranslationResult } from './translate';
 export function insertTranslationPopup(
   targetEl: HTMLElement,
   containerEl: HTMLElement,
-  offsetBottom: number = 4,
+  offsetBottom: number,
+  onClose: () => void,
 ): HTMLElement {
   const shadowDomWrapperEl = document.createElement('div');
   shadowDomWrapperEl.classList.add(subPopupWrapperClassName);
@@ -27,6 +28,7 @@ export function insertTranslationPopup(
 
   const popupEl = shadow.querySelector(`.${subPopupClassName}`) as HTMLElement;
   positionElement(popupEl, targetEl, containerEl);
+  popupEl.querySelector('.sub-tr-close-icon')?.addEventListener('click', onClose);
   return popupEl;
 }
 

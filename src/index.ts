@@ -160,6 +160,14 @@ if (siteApi.subtitleTransformType === 'mask') {
   });
 }
 
+function onWordLeaveHandler(el: HTMLElement) {
+  hideTranslationPopup();
+  el.classList.remove(subWordReveal);
+  lastHoveredElement = null;
+  lastTranslationPopup = null;
+  cancelTranslate();
+  playVideo();
+}
 // Show/hide the popup with translation on mousehover of a word in the subtitles.
 addMouseEnterLeaveEventListeners({
   selector: `.${subWordClassName}, .${subWordMaskClassName}`,
@@ -174,7 +182,14 @@ addMouseEnterLeaveEventListeners({
 
     if (!containerEl) return;
 
-    const popupEl = insertTranslationPopup(el, containerEl, siteApi.popupOffsetBottom);
+    const popupEl = insertTranslationPopup(
+      el,
+      containerEl,
+      siteApi.popupOffsetBottom,
+      () => {
+        onWordLeaveHandler(el);
+      },
+    );
     lastTranslationPopup = popupEl;
     lastHoveredElement = el;
     isVideoPaused = isVideoPaused || siteApi.pause();
@@ -182,15 +197,7 @@ addMouseEnterLeaveEventListeners({
     translateWord(el, popupEl);
   },
 
-  // Hide translation popup
-  onLeave: (el: HTMLElement) => {
-    hideTranslationPopup();
-    el.classList.remove(subWordReveal);
-    lastHoveredElement = null;
-    lastTranslationPopup = null;
-    cancelTranslate();
-    playVideo();
-  },
+  onLeave: onWordLeaveHandler,
 });
 
 // Listen to changes in preferences and update lang and word settings.

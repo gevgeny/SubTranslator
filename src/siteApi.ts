@@ -1,7 +1,7 @@
 interface SubtitleApi {
   subtitleSelector: string;
   subtitlePopupSelector: string;
-  popupOffsetBottom?: number;
+  popupOffsetBottom: number;
   pause: () => boolean;
   play: () => void;
 }
@@ -20,6 +20,7 @@ const siteApiMap = {
     subtitleTransformType: 'replace',
     subtitleSelector: '.jw-captions',
     subtitlePopupSelector: '#player',
+    popupOffsetBottom: 4,
     pause() {
       if (document.querySelector<HTMLVideoElement>('video.jw-video')?.paused)
         return false;
@@ -34,6 +35,7 @@ const siteApiMap = {
     subtitleTransformType: 'replace',
     subtitleSelector: '.player-timedtext:not(.billboard .player-timedtext)',
     subtitlePopupSelector: '.watch-video',
+    popupOffsetBottom: 0,
     pause() {
       if (
         document.querySelector<HTMLButtonElement>('[data-uia^="control-play-pause-play"]')
@@ -54,7 +56,7 @@ const siteApiMap = {
     subtitleTransformType: 'replace',
     subtitleSelector: '#movie_player .ytp-caption-window-container',
     subtitlePopupSelector: '#movie_player',
-    popupOffsetBottom: 6,
+    popupOffsetBottom: 4,
     pause() {
       if (document.querySelector<HTMLVideoElement>('#movie_player video')?.paused)
         return false;
@@ -70,6 +72,7 @@ const siteApiMap = {
     subtitleSelector: '.atvwebplayersdk-captions-overlay',
     maskContainerSelector: '.atvwebplayersdk-captions-text',
     subtitlePopupSelector: '.atvwebplayersdk-overlays-container',
+    popupOffsetBottom: 4,
     pause() {
       if (document.querySelector<HTMLVideoElement>('#dv-web-player video')?.paused)
         return false;
