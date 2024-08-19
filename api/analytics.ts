@@ -29,7 +29,7 @@ const allowedOrigins = [
   'http://localhost:3000',
 ];
 
-export async function GET(request: Request) {
+export async function OPTIONS(request: Request) {
   const origin = request.headers.get('Origin') ?? '';
   console.log('origin', origin);
   return new Response('', {

@@ -8,7 +8,7 @@ const text = `
     <script>
       function post() {
         fetch('https://sub-translator.vercel.app/api/analytics', {
-          method: 'GET',
+          method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             type: 'pageview',
