@@ -21,6 +21,7 @@
     "@parcel/config-webextension": "^2.12.0",
     "@parcel/reporter-bundle-analyzer": "^2.12.0",
     "@parcel/transformer-inline-string": "^2.12.0",
+    "@types/node": "^22.4.1",
     "bestzip": "^2.2.1",
     "parcel": "^2.12.0",
     "prettier": "3.3.3",
