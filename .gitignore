@@ -9,3 +9,4 @@ node_modules
 parcel-bundle-reports
 dist.crx
 dist.pem
+.vercel

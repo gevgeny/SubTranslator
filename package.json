@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node_modules/parcel/lib/bin.js watch manifest.json --config @parcel/config-webextension --no-hmr",
     "build": "node_modules/parcel/lib/bin.js build manifest.json --config @parcel/config-webextension",
+    "pack": "bestzip build/v$npm_package_version.zip dist/*",
     "analize": "parcel build manifest.json --config @parcel/config-webextension --reporter @parcel/reporter-bundle-analyzer",
     "fix": "eslint --fix src/**/*.ts"
   },
