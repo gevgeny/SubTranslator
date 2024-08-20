@@ -30,6 +30,7 @@ const tabEls = Array.from(document.querySelectorAll<HTMLButtonElement>('.tab'));
 const tabContentEls = Array.from(
   document.querySelectorAll<HTMLDivElement>('.tab-content'),
 );
+const settingsLinkEl = document.querySelector<HTMLAnchorElement>('#settings-link')!;
 
 const prefsState = {
   get targetLang(): string {
@@ -189,6 +190,11 @@ tabEls.forEach((tab) => {
     const button = event.target as HTMLButtonElement;
     activateTab(button?.name as 'description' | 'settings');
   });
+});
+
+settingsLinkEl.addEventListener('click', () => {
+  console.log('click');
+  activateTab('settings');
 });
 
 sourceLangSelectEl.addEventListener('change', (event: Event) => {
