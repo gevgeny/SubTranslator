@@ -26,6 +26,10 @@ const mostFrequentWordsFieldsetEl = document.querySelector<HTMLFieldSetElement>(
   '.mostFrequentWordsFieldset',
 )!;
 const wordCountEl = document.querySelector<HTMLElement>('.wordCount')!;
+const tabEls = Array.from(document.querySelectorAll<HTMLButtonElement>('.tab'));
+const tabContentEls = Array.from(
+  document.querySelectorAll<HTMLDivElement>('.tab-content'),
+);
 
 const prefsState = {
   get targetLang(): string {
@@ -162,10 +166,30 @@ function addLanguages(): void {
     });
 }
 
+function activateTab(tab: 'description' | 'settings'): void {
+  tabEls.forEach((el) => el.classList.remove('active'));
+  tabEls.find((el) => el.name === tab)?.classList.add('active');
+  tabContentEls.forEach((el) => el.classList.remove('active'));
+  tabContentEls.find((el) => el.dataset['name'] === tab)?.classList.add('active');
+
+  localStorage.setItem('activeTab', tab);
+}
+
 addLanguages();
 applyPrefs();
+activateTab(
+  (localStorage.getItem('activeTab') as 'description' | 'settings' | null) ??
+    'description',
+);
 
 versionEl.innerHTML = `v${chrome.runtime.getManifest().version}`;
+
+tabEls.forEach((tab) => {
+  tab.addEventListener('click', (event: PointerEvent) => {
+    const button = event.target as HTMLButtonElement;
+    activateTab(button?.name as 'description' | 'settings');
+  });
+});
 
 sourceLangSelectEl.addEventListener('change', (event: Event) => {
   prefsState.sourceLang = (event.target as HTMLInputElement).value;

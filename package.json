@@ -1,6 +1,6 @@
 {
   "name": "sub-translator",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "",
   "scripts": {
     "start": "node_modules/parcel/lib/bin.js watch manifest.json --config @parcel/config-webextension --no-hmr",

@@ -30,9 +30,11 @@
       display: inline;
       margin: 8px;
     }
+    li {
+      padding-bottom: 4px;
+    }
 
     .hideWordsSection {
-      /*background: var(--background-alt);*/
       height: 0;
       opacity: 0;
       overflow: hidden;
@@ -43,59 +45,99 @@
       height: 144px;
       opacity: 1;
     }
+    .tabs {
+      border-bottom: 1px solid var(--border);
+    }
+    .tab {
+      background: transparent;
+      font-weight: 700;
+      margin: 0;
+      border-radius: 0;
+      font-size: 1.2em;
+    }
+    .tab:hover {
+      outline: none;
+      color: var(--selection);
+      background: transparent;
+    }
+    .tab:focus {
+      box-shadow: none;
+    }
+    .tab.active {
+      border-bottom: 3px solid var(--border);
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
   </style>
 </head>
 <body>
   <h2>Subtitle Translator 🌎</h2>
   <sub id="version" style="color: gray;position: absolute;right: 0.5rem;top: 0.5rem;"></sub>
-  <p>
-    <span>Translate from</span><select class="sourceLangSelect"></select><span>to</span><select class="targetLangSelect"></select>
-  </p>
-  <hr>
-  <p>
-    <label>
-      <input type="checkbox" class="commonWordsInput">
-      Hide words (useful for language learners) <b>(English only)</b>
-    </label>
-  </p>
+  <div class="tabs">
+    <button class="tab" name="description">Description 💬</button>
+    <button class="tab" name="settings">Settings ⚙️</button>
+  </div>
 
-  <div>
-    <form>
-      <fieldset disabled="disabled" class="fieldset hideWordsSection">
-        <div style="display: flex">
-          <label>
-            <input type="radio" class="mostFrequentWordsInput" name="words" value="most-common">
-            Most frequent
-          </label>
-          <label style="padding-left: 16px">
-            <input type="radio" class="allWordsInputInput" name="words" value="all">
-            All
-          </label>
-        </div>
-        <fieldset class="mostFrequentWordsFieldset">
-          <label style="justify-content: space-between">
-            <input
-              class="commonWordsRangeInput"
-              type="range" style="width: 100%;"
-              min="10" value="100" step="10" max="3000"
-            />
-          </label>
-          <div style="display: flex; justify-content: space-between">
+  <div class="tab-content" data-name="description">
+    <p style="font-size: 1.2em">
+      Start watching content with subtitles on <b>Netflix</b>, <b>Amazon Prime Video</b>, <b>YouTube</b>, or <b>Kinopub</b>, then hover your mouse over any word and a translation will instantly appear in a popup.
+    </p>
+    <img src="../../images/demo.webp" alt="demo" style="width: 100%; height: auto;">
+    <p style="font-size: 1.2em">You can set source and translation languages in the <b>Settings&nbsp;⚙️</b> tab.</p>
+  </div>
+
+  <div class="tab-content" data-name="settings">
+    <p>
+      <span>Translate from</span><select class="sourceLangSelect"></select><span>to</span><select class="targetLangSelect"></select>
+    </p>
+    <p>
+      <label>
+        <input type="checkbox" class="commonWordsInput">
+        Hide words (useful for language learners) <b>(English only)</b>
+      </label>
+    </p>
+    <div>
+      <form>
+        <fieldset disabled="disabled" class="fieldset hideWordsSection">
+          <div style="display: flex">
             <label>
-              <input type="checkbox" class="contractionsWordsInput">
-               contractions (I'm, isn't)
+              <input type="radio" class="mostFrequentWordsInput" name="words" value="most-common">
+              Most frequent
             </label>
-            <label>
-              <input type="checkbox" class="informalWordsInput">
-              informal contractions (shoulda, dontcha)
+            <label style="padding-left: 16px">
+              <input type="radio" class="allWordsInputInput" name="words" value="all">
+              All
             </label>
           </div>
+          <fieldset class="mostFrequentWordsFieldset">
+            <label style="justify-content: space-between">
+              <input
+                class="commonWordsRangeInput"
+                type="range" style="width: 100%;"
+                min="10" value="100" step="10" max="3000"
+              />
+            </label>
+            <div style="display: flex; justify-content: space-between">
+              <label>
+                <input type="checkbox" class="contractionsWordsInput">
+                contractions (I'm, isn't)
+              </label>
+              <label>
+                <input type="checkbox" class="informalWordsInput">
+                informal contractions (shoulda, dontcha)
+              </label>
+            </div>
+          </fieldset>
+          <div style="display: flex; justify-content: flex-end; padding: 0.5rem 0;">
+            Hidden words: &nbsp<b class="wordCount">0</b>
+          </div>
         </fieldset>
-        <div style="display: flex; justify-content: flex-end; padding: 0.5rem 0;">
-          Hidden words: &nbsp<b class="wordCount">0</b>
-        </div>
-      </fieldset>
-    </form>
+      </form>
+    </div>
   </div>
   <hr>
   <ul style="padding-left: 16px">

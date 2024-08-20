@@ -2,7 +2,7 @@ import { logPrefix } from '../utils';
 
 export const defaultPrefs: Prefs = {
   sourceLang: 'en',
-  targetLang: 'ru',
+  targetLang: 'es',
   hideWords: false,
   hideType: 'most-common',
   contractions: true,
