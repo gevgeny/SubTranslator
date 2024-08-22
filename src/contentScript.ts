@@ -16,3 +16,11 @@ chrome.runtime.onMessage.addListener((msg) => {
     sendCurrentPrefsToInjectedScripts();
   }
 });
+
+document.addEventListener('session', () => {
+  chrome.runtime.sendMessage(undefined, { type: 'session' });
+});
+
+document.addEventListener('view-popup', (event: CustomEvent<ViewPopupEvent>) => {
+  chrome.runtime.sendMessage(undefined, { type: 'view-popup', ...event.detail });
+});

@@ -21,6 +21,7 @@ import {
   getWordMaskHTML,
   subWordMaskClassName,
   getWordWrapperHTML,
+  subWordHiddenClassName,
 } from './markup';
 import startTextMutationObserver from './startTextMutationObserver';
 import { getSiteSpecificApi } from './siteApi';
@@ -37,7 +38,8 @@ let targetLang = defaultPrefs.targetLang;
 const subtitleMasks = new Map<Text, HTMLElement[]>();
 let lastHoveredElement: HTMLElement | null = null;
 let lastTranslationPopup: HTMLElement | null = null;
-let videoPlayTimer: number | undefined;
+let videoPlayTimer: null | ReturnType<typeof setTimeout> = null;
+
 let isVideoPaused = false;
 
 /**
@@ -139,6 +141,19 @@ function translateWord(el: HTMLElement, popupEl: HTMLElement) {
     });
 }
 
+function sendPopupViewedMessage(isHidden: boolean) {
+  document.dispatchEvent(
+    new CustomEvent<ViewPopupEvent>('view-popup', {
+      detail: {
+        sourceLang,
+        targetLang,
+        host: location.host,
+        isHidden,
+      },
+    }),
+  );
+}
+
 // Observe subtitles change on a page and replace text nodes with hidden words
 // or with just custom nodes to make translation on mouseover easier
 if (siteApi.subtitleTransformType === 'mask') {
@@ -175,6 +190,10 @@ addMouseEnterLeaveEventListeners({
 
   // Translate hovered word and show translation popup
   onEnter: (el: HTMLElement) => {
+    sendPopupViewedMessage(
+      el.classList.contains(subWordHiddenClassName) ||
+        el.classList.contains(subWordMaskClassName),
+    );
     el.classList.add(subWordReveal);
     const containerEl = document.querySelector<HTMLElement>(
       siteApi.subtitlePopupSelector,
@@ -193,7 +212,7 @@ addMouseEnterLeaveEventListeners({
     lastTranslationPopup = popupEl;
     lastHoveredElement = el;
     isVideoPaused = isVideoPaused || siteApi.pause();
-    clearTimeout(videoPlayTimer);
+    clearTimeout(Number(videoPlayTimer));
     translateWord(el, popupEl);
   },
 
@@ -223,3 +242,5 @@ setInterval(() => {
 }, 100);
 
 console.log(logPrefix, 'initialized');
+
+document.dispatchEvent(new CustomEvent<undefined>('session'));
