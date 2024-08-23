@@ -193,7 +193,6 @@ tabEls.forEach((tab) => {
 });
 
 settingsLinkEl.addEventListener('click', () => {
-  console.log('click');
   activateTab('settings');
 });
 

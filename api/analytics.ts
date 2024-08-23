@@ -2,7 +2,6 @@ import { sendAnalytics } from '../server/sendAnalytics';
 
 export async function POST(request: Request) {
   const params = await request.json();
-  console.log('analytics params:', params);
   return sendAnalytics(params);
 }
 
@@ -13,7 +12,7 @@ const allowedOrigins = [
 
 export async function OPTIONS(request: Request) {
   const origin = request.headers.get('Origin') ?? '';
-  console.log('origin', origin);
+
   return new Response('', {
     headers: {
       'Access-Control-Allow-Origin': allowedOrigins.includes(origin)

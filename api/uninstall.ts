@@ -16,7 +16,6 @@ export async function GET(request: Request) {
       version: urlParams.get('v'),
     },
   };
-  console.log('uninstall params', params);
   waitUntil(sendAnalytics(params));
   return Response.redirect('https://app.whirr.co/p/clzpavjjl01iior0hza2y7zk5');
 }

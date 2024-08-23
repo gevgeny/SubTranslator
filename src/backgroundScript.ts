@@ -41,7 +41,6 @@ chrome.runtime.onInstalled.addListener((details) => {
 chrome.runtime.onMessage.addListener((msg) => {
   if (msg.type === 'session') {
     sessionId = crypto.randomUUID();
-    console.log('sessionId', sessionId);
   }
   if (msg.type === 'view-popup') {
     if (!sessionId) {
