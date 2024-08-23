@@ -2,7 +2,7 @@ let sessionId: string | undefined;
 
 interface AnalyticsEvent {
   type: 'pageview' | 'event';
-  event: 'pageview' | 'install' | 'uninstall';
+  event: 'pageview' | 'popup' | 'install' | 'uninstall';
   host?: string;
   meta?: object;
 }
@@ -51,9 +51,15 @@ chrome.runtime.onMessage.addListener((msg) => {
       type: 'pageview',
       event: 'pageview',
       host: msg.host,
+    });
+
+    sendAnalytics({
+      type: 'event',
+      event: 'popup',
+      host: msg.host,
       meta: {
-        from: msg.from,
-        to: msg.to,
+        sourceLang: msg.sourceLang,
+        targetLang: msg.targetLang,
         isHidden: msg.isHidden,
         theme: msg.theme,
       },
