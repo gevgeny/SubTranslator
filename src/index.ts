@@ -149,6 +149,9 @@ function sendPopupViewedMessage(isHidden: boolean) {
         targetLang,
         host: location.host,
         isHidden,
+        theme: window.matchMedia('(prefers-color-scheme: dark)').matches
+          ? 'dark'
+          : 'light',
       },
     }),
   );

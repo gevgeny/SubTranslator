@@ -55,6 +55,7 @@ chrome.runtime.onMessage.addListener((msg) => {
         from: msg.from,
         to: msg.to,
         isHidden: msg.isHidden,
+        theme: msg.theme,
       },
     });
   }

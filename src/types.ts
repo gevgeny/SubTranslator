@@ -3,4 +3,5 @@ type ViewPopupEvent = {
   targetLang: string;
   host: string;
   isHidden: boolean;
+  theme: 'dark' | 'light';
 };
