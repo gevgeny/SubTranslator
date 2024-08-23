@@ -6,6 +6,8 @@ export async function GET(request: Request) {
   const params = {
     type: 'event',
     event: 'uninstall',
+    page_id: 'uninstall',
+    path: '/uninstall',
     time: +new Date(),
     language: urlParams.get('l'),
     ua: urlParams.get('ua'),

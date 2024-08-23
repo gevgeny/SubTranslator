@@ -29,6 +29,7 @@ chrome.runtime.onInstalled.addListener((details) => {
     sendAnalytics({
       type: 'event',
       event: 'install',
+      host: 'install',
       meta: {
         time: +new Date(),
         version: chrome.runtime.getManifest().version,
