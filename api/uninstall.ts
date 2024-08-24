@@ -13,6 +13,7 @@ export async function GET(request: Request) {
     timezone: urlParams.get('tz'),
     brands: urlParams.get('brands'),
     os_name: urlParams.get('os'),
+    os_version: urlParams.get('osv'),
     meta: {
       version: urlParams.get('v'),
     },
