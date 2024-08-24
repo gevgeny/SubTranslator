@@ -8,10 +8,11 @@ export async function GET(request: Request) {
     event: 'uninstall',
     page_id: 'uninstall',
     path: '/uninstall',
-    time: +new Date(),
     language: urlParams.get('l'),
     ua: urlParams.get('ua'),
     timezone: urlParams.get('tz'),
+    brands: urlParams.get('brands'),
+    os_name: urlParams.get('os'),
     meta: {
       version: urlParams.get('v'),
     },

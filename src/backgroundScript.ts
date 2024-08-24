@@ -1,5 +1,26 @@
 let sessionId: string | undefined;
 
+let brands = navigator.userAgentData?.brands;
+let os_name: string | undefined;
+let os_version: string | undefined;
+
+navigator.userAgentData
+  ?.getHighEntropyValues(['platform', 'platformVersion'])
+  .then((values) => {
+    os_name = values.platform;
+    os_version = values.platformVersion;
+    const url =
+      `https://sub-translator.vercel.app/api/uninstall/` +
+      `?v=${chrome.runtime.getManifest().version}` +
+      `&l=${navigator.language}&ua=${navigator.userAgent}` +
+      `&tz=${Intl.DateTimeFormat().resolvedOptions().timeZone}` +
+      `&os=${os_name}` +
+      `&osv=${os_version}` +
+      `&brands=${JSON.stringify(brands)}`;
+    console.log('url', url);
+    chrome.runtime.setUninstallURL(url);
+  });
+
 interface AnalyticsEvent {
   type: 'pageview' | 'event';
   event: 'pageview' | 'popup' | 'install' | 'uninstall';
@@ -20,6 +41,9 @@ function sendAnalytics({ host, meta = {}, type, event }: AnalyticsEvent) {
       session_id: sessionId,
       page_id: host,
       path: host ? `/${host}` : undefined,
+      os_name,
+      os_version,
+      brands,
     }),
   });
 }
@@ -66,7 +90,3 @@ chrome.runtime.onMessage.addListener((msg) => {
     });
   }
 });
-
-chrome.runtime.setUninstallURL(
-  `https://sub-translator.vercel.app/api/uninstall/?v=${chrome.runtime.getManifest().version}&l=${navigator.language}&ua=${navigator.userAgent}&tz=${Intl.DateTimeFormat().resolvedOptions().timeZone}`,
-);
