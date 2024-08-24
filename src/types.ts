@@ -1,4 +1,4 @@
-export type ViewPopupEvent = {
+type ViewPopupEvent = {
   sourceLang: string;
   targetLang: string;
   host: string;
@@ -6,9 +6,13 @@ export type ViewPopupEvent = {
   theme: 'dark' | 'light';
 };
 
-export interface AnalyticsEvent {
+interface AnalyticsEvent {
   type: 'pageview' | 'event';
   event: 'pageview' | 'popup' | 'install' | 'uninstall';
   host?: string;
   meta?: object;
+  os_name?: string;
+  os_version?: string;
+  brands?: NavigatorUABrandVersion[];
+  session_id?: string;
 }
