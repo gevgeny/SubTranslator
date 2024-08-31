@@ -1,7 +1,7 @@
 {
-  "name": "Spotlight Lingo: Point to Translate Words in Subtitles \uD83C\uDF0E",
+  "name": "Spotlight Lingo \uD83C\uDF0E. Point to Translate Words in Subtitles",
   "version": "1.0.0",
-  "description": "Point to a word with your mouse to translate it instantly while watching on Netflix, Amazon Prime, YouTube, and Kinopub.  \uD83C\uDDEC\uD83C\uDDE7\uD83C\uDDEA\uD83C\uDDF8\uD83C\uDDE9\uD83C\uDDEA\uD83C\uDDEB\uD83C\uDDF7\uD83C\uDDEE\uD83C\uDDF9\uD83C\uDDF7\uD83C\uDDFA",
+  "description": "Point your mouse to a subtitles word to translate it on Netflix, Amazon Prime, YouTube \uD83C\uDDEC\uD83C\uDDE7\uD83C\uDDEA\uD83C\uDDF8\uD83C\uDDE9\uD83C\uDDEA\uD83C\uDDEB\uD83C\uDDF7\uD83C\uDDEE\uD83C\uDDF9\uD83C\uDDF7\uD83C\uDDFA",
   "manifest_version": 3,
   "background": {
     "service_worker": "src/backgroundScript.ts"
