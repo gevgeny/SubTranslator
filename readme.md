@@ -1,9 +1,8 @@
-# Subtitle Translator
+# Spotlight Lingo
 
 ## Summary
 
-Translate subtitles instantly while you watch on Netflix, Amazon Prime Video, YouTube, and Kinopub.
-
+Point to a word with your mouse to translate it instantly while watching on Netflix, Amazon Prime, YouTube, and Kinopub.
 ## Description
 
 💬 **Instant Subtitle Translation**:

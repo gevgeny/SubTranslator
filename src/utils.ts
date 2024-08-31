@@ -1,7 +1,7 @@
 import { popupHeight, popupVerticalOffset, popupWidth } from './markup';
 import debounce from 'lodash-es/debounce';
 
-export const logPrefix = '\u001b[1;36m[Subtitle Translator \uD83C\uDF0E]';
+export const logPrefix = '\u001b[1;36m[Spotlight Lingo \uD83C\uDF0E]';
 
 export function createElementFromHTML(htmlString: string) {
   const div = document.createElement('div');
