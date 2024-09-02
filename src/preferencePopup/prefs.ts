@@ -1,4 +1,5 @@
 import { logPrefix } from '../utils';
+import { Language } from './languages';
 
 export const defaultPrefs: Prefs = {
   sourceLang: 'en',
@@ -11,8 +12,8 @@ export const defaultPrefs: Prefs = {
 };
 
 export type Prefs = {
-  sourceLang: string;
-  targetLang: string;
+  sourceLang: Language;
+  targetLang: Language;
   hideWords: boolean;
   hideType: 'most-common' | 'all';
   contractions: boolean;

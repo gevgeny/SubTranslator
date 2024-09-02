@@ -1,4 +1,4 @@
-import { YaTranslateResponse, isTranslationResult, MyMemoryResponse } from './translate';
+import { Translation } from './translate';
 import { WordMask } from './textProcessing/wrapNodeWords';
 
 export const popupWidth = 220;
@@ -44,53 +44,47 @@ function closeIconSVG() {
 }
 
 export function getTranslationHTML(
-  dictResponse: YaTranslateResponse | MyMemoryResponse,
+  translations: Translation[],
   sourceLang: string,
   targetLang: string,
 ) {
-  if (isTranslationResult(dictResponse)) {
-    return `
-        <div class="sub-tr-popup-content">
-          <div class="sub-tr-dict">
-            <div class="sub-tr-dict-item">
-              <div class="sub-tr-dict-item-title">
-                <span class="sub-tr-dict-item-text">${dictResponse.text}</span>
-              </div>
-              <ol class="sub-tr-dict-meaning">
-              ${dictResponse.translations
-                .map((tr) => `<li class="sub-tr-dict-meaning-item">${tr}</li>`)
-                .join('')}
-              </ol>
-            </div>
-          </div>
-        </div>
-    `;
-  }
+  // if (isTranslationResult(dictResponse)) {
+  //   return `
+  //       <div class="sub-tr-popup-content">
+  //         <div class="sub-tr-dict">
+  //           <div class="sub-tr-dict-item">
+  //             <div class="sub-tr-dict-item-title">
+  //               <span class="sub-tr-dict-item-text">${dictResponse.text}</span>
+  //             </div>
+  //             <ol class="sub-tr-dict-meaning">
+  //             ${dictResponse.translations
+  //               .map((tr) => `<li class="sub-tr-dict-meaning-item">${tr}</li>`)
+  //               .join('')}
+  //             </ol>
+  //           </div>
+  //         </div>
+  //       </div>
+  //   `;
+  // }
 
+  // prettier-ignore
   return `
     <div class="sub-tr-popup-content">
       <div class="sub-tr-dict">
-        ${dictResponse[`${sourceLang}-${targetLang}`].regular
-          .map(
-            (item) => `
+        ${translations.map((translation) => `
           <div class="sub-tr-dict-item">
             <div class="sub-tr-dict-item-title">
-              <span class="sub-tr-dict-item-text">${item.text ?? ''}</span>
-              <span class="sub-tr-dict-item-ts">${item.ts ? `[${item.ts}]` : ''}</span>
-              <span class="sub-tr-dict-item-pos">${item.pos?.text ?? ''}</span>
+              <span class="sub-tr-dict-item-text">${translation.text ?? ''}</span>
+              <span class="sub-tr-dict-item-ts">${translation.transcription ? `[${translation.transcription}]` : ''}</span>
+              <span class="sub-tr-dict-item-pos">${translation.pos ?? ''}</span>
             </div>
             <ol class="sub-tr-dict-meaning">
-            ${(item.tr ?? [])
-              .map(
-                (tr) => `<li class="sub-tr-dict-meaning-item">${tr?.text ?? ''}</li>
-            `,
-              )
-              .join('')}
+              ${(translation.values ?? []).map((value) => `
+                <li class="sub-tr-dict-meaning-item">${value ?? ''}</li>
+              `).join('')}
             </ol>
           </div>
-        `,
-          )
-          .join('')}
+        `).join('')}
       </div>
     </div>
   `;

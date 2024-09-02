@@ -8,7 +8,7 @@ import {
 // @ts-ignore
 import styles from 'bundle-text:./translationPopup.css';
 import { positionElement, toTrustedHTML } from './utils';
-import { YaTranslateResponse, MyMemoryResponse } from './translate';
+import { Translation } from './translate';
 
 export function insertTranslationPopup(
   targetEl: HTMLElement,
@@ -34,11 +34,11 @@ export function insertTranslationPopup(
 
 export function insertTranslationResult(
   translationPopupEl: HTMLElement,
-  translation: YaTranslateResponse | MyMemoryResponse,
+  translations: Translation[],
   sourceLang: string,
   targetLang: string,
 ) {
-  const html = getTranslationHTML(translation, sourceLang, targetLang);
+  const html = getTranslationHTML(translations, sourceLang, targetLang);
   const loaderEl = translationPopupEl.querySelector(`.${subLoadingClassName}`);
   loaderEl?.insertAdjacentHTML('afterend', toTrustedHTML(html));
   loaderEl?.remove();

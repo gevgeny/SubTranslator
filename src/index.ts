@@ -131,8 +131,8 @@ function playVideo() {
 
 function translateWord(el: HTMLElement, popupEl: HTMLElement) {
   translate(el.dataset['word'] ?? el.innerText, sourceLang, targetLang)
-    .then((translation) => {
-      insertTranslationResult(popupEl, translation, sourceLang, targetLang);
+    .then((translations) => {
+      insertTranslationResult(popupEl, translations, sourceLang, targetLang);
     })
     .catch((error) => {
       if (error.name !== 'AbortError') {
@@ -179,7 +179,7 @@ if (siteApi.subtitleTransformType === 'mask') {
 }
 
 function onWordLeaveHandler(el: HTMLElement) {
-  // hideTranslationPopup();
+  hideTranslationPopup();
   el.classList.remove(subWordReveal);
   lastHoveredElement = null;
   lastTranslationPopup = null;

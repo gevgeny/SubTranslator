@@ -1,59 +1,68 @@
 import { partition } from 'lodash-es';
+import { Language } from './preferencePopup/languages';
 
-export interface DictionaryValue {
+interface DictionaryValue {
   code: string;
   text: string;
   tooltip: string;
 }
 
-export interface DictionarySynonym {
+interface DictionarySynonym {
   text: string;
   gen: DictionaryValue;
   pos: DictionaryValue;
 }
 
-export interface DictionaryMeaning {
+interface DictionaryMeaning {
   text: string;
   gen: DictionaryValue;
   syn: DictionarySynonym[];
   pos: DictionaryValue;
 }
 
-export interface DictionaryItem {
+interface DictionaryItem {
   text: string;
   pos: DictionaryValue;
   ts: string;
   tr: DictionaryMeaning[];
 }
 
-export interface Dictionary {
+interface Dictionary {
   regular: DictionaryItem[];
 }
-export interface YaTranslateResponse {
+interface YaTranslateResponse {
   [langKey: string]: Dictionary;
 }
 
-export interface MyMemoryTranslationResponse {
+interface MyMemoryTranslationResponse {
   responseData: {
     translatedText: string;
   };
   matches: {
     translation: string;
     'created-by': string;
+    quality: string;
   }[];
 }
 
-export interface MyMemoryResponse {
+interface MyMemoryResponse {
   text: string;
   translations: string[];
 }
 
-export interface GoogleTranslateResponse {
-  text: string;
-  translations: string[];
+interface GoogleTranslateResponse {
+  sentences: {
+    orig: string;
+    trans: string;
+  }[];
+  dict: {
+    pos: string;
+    base_form: string;
+    terms: string[];
+  }[];
 }
 
-interface Translation {
+export interface Translation {
   text: string;
   pos: string;
   transcription: string;
@@ -79,12 +88,18 @@ function fetchTranslationFromMyMemoryResponse(
       pos: '',
       transcription: '',
       text,
-      values: response.matches.map((matches) => matches.translation),
+      values: response.matches
+        .filter(
+          (match) =>
+            (match['created-by'] === 'MateCat' || match['created-by'] === 'Wikipedia') &&
+            match.quality !== '0',
+        )
+        .map((matches) => matches.translation),
     },
   ];
 }
 
-async function nyMemoryTranslate(
+async function myMemoryTranslate(
   text: string,
   sourceLang: string,
   targetLang: string,
@@ -105,7 +120,6 @@ function fetchTranslationFromYaTranslateResponse(
   targetLang: string,
   response: YaTranslateResponse,
 ): Translation[] {
-  console.log('ya:', response);
   return response?.[`${sourceLang}-${targetLang}`]?.regular.map((item) => ({
     text: item.text,
     pos: item.pos?.text,
@@ -135,32 +149,64 @@ async function yaTranslate(
   }
 }
 
+function fetchTranslationFromGoogleTranslateResponse(
+  response: GoogleTranslateResponse,
+): Translation[] {
+  const fromSentences =
+    response.sentences?.map((sentence) => ({
+      text: sentence.orig,
+      pos: '',
+      transcription: '',
+      values: [sentence.trans],
+    })) ?? [];
+
+  const fromDict =
+    response.dict?.map((translation) => ({
+      text: translation.base_form,
+      pos: translation.pos,
+      transcription: '',
+      values: translation.terms,
+    })) ?? [];
+
+  return [...fromSentences, ...fromDict];
+}
+
 async function googleTranslate(
   text: string,
   sourceLang: string,
   targetLang: string,
-): Promise<GoogleTranslateResponse | null> {
+): Promise<Translation[]> {
   googleTranslateController = new AbortController();
   try {
     const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&dt=t&dt=bd&dj=1&q=${text}&tl=${targetLang}`;
     const response = await fetch(url, { signal: googleTranslateController.signal });
     if (!response.ok) throw new Error('Failed to google translate');
 
-    return response.json();
+    return fetchTranslationFromGoogleTranslateResponse(await response.json());
   } catch (error) {
-    return null;
+    return [];
   }
 }
 
 export async function translate(
   text: string,
-  sourceLang: string,
-  targetLang: string,
+  sourceLang: Language,
+  targetLang: Language,
 ): Promise<Translation[]> {
-  const translations = await yaTranslate(text, sourceLang, targetLang);
+  let translations;
+  const [translate1, translate2] =
+    sourceLang === 'ru' || targetLang === 'ru'
+      ? [yaTranslate, googleTranslate]
+      : [googleTranslate, yaTranslate];
+
+  translations = await translate1(text, sourceLang, targetLang);
 
   if (!translations?.length) {
-    return nyMemoryTranslate(text, sourceLang, targetLang);
+    translations = await translate2(text, sourceLang, targetLang);
+  }
+
+  if (!translations?.length) {
+    translations = await myMemoryTranslate(text, sourceLang, targetLang);
   }
 
   return translations;

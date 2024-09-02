@@ -1,5 +1,5 @@
 import tokens from '../textProcessing/tokens.json';
-import languages from './languages';
+import { Language, languages } from './languages';
 import { getPrefs, Prefs, setPrefs } from './prefs';
 
 const versionEl = document.querySelector<HTMLInputElement>('#version')!;
@@ -197,11 +197,11 @@ settingsLinkEl.addEventListener('click', () => {
 });
 
 sourceLangSelectEl.addEventListener('change', (event: Event) => {
-  prefsState.sourceLang = (event.target as HTMLInputElement).value;
+  prefsState.sourceLang = (event.target as HTMLInputElement).value as Language;
   savePrefs();
 });
 targetLangSelectEl.addEventListener('change', (event: Event) => {
-  prefsState.targetLang = (event.target as HTMLInputElement).value;
+  prefsState.targetLang = (event.target as HTMLInputElement).value as Language;
   savePrefs();
 });
 hideWordsInputEl.addEventListener('change', (event: Event) => {

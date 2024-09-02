@@ -1,6 +1,5 @@
 import uniq from 'lodash-es/uniq';
 import { fetchTextNodes, logPrefix } from './utils';
-import { subWordMaskClassName } from './markup';
 
 let isObserving = false;
 let observer: MutationObserver | null = null;
