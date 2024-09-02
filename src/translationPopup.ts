@@ -8,7 +8,7 @@ import {
 // @ts-ignore
 import styles from 'bundle-text:./translationPopup.css';
 import { positionElement, toTrustedHTML } from './utils';
-import { DictionaryResponse, TranslationResult } from './translate';
+import { YaTranslateResponse, MyMemoryResponse } from './translate';
 
 export function insertTranslationPopup(
   targetEl: HTMLElement,
@@ -34,7 +34,7 @@ export function insertTranslationPopup(
 
 export function insertTranslationResult(
   translationPopupEl: HTMLElement,
-  translation: DictionaryResponse | TranslationResult,
+  translation: YaTranslateResponse | MyMemoryResponse,
   sourceLang: string,
   targetLang: string,
 ) {

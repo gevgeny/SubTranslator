@@ -1,4 +1,4 @@
-import { DictionaryResponse, isTranslationResult, TranslationResult } from './translate';
+import { YaTranslateResponse, isTranslationResult, MyMemoryResponse } from './translate';
 import { WordMask } from './textProcessing/wrapNodeWords';
 
 export const popupWidth = 220;
@@ -44,7 +44,7 @@ function closeIconSVG() {
 }
 
 export function getTranslationHTML(
-  dictResponse: DictionaryResponse | TranslationResult,
+  dictResponse: YaTranslateResponse | MyMemoryResponse,
   sourceLang: string,
   targetLang: string,
 ) {

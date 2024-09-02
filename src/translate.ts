@@ -29,11 +29,11 @@ export interface DictionaryItem {
 export interface Dictionary {
   regular: DictionaryItem[];
 }
-export interface DictionaryResponse {
+export interface YaTranslateResponse {
   [langKey: string]: Dictionary;
 }
 
-export interface TranslationResponse {
+export interface MyMemoryTranslationResponse {
   responseData: {
     translatedText: string;
   };
@@ -43,59 +43,108 @@ export interface TranslationResponse {
   }[];
 }
 
-export interface TranslationResult {
+export interface MyMemoryResponse {
   text: string;
   translations: string[];
 }
 
+export interface GoogleTranslateResponse {
+  text: string;
+  translations: string[];
+}
+
+interface Translation {
+  text: string;
+  pos: string;
+  transcription: string;
+  values: string[];
+}
+
 export function isTranslationResult(
-  response: TranslationResult | DictionaryResponse,
-): response is TranslationResult {
+  response: MyMemoryResponse | YaTranslateResponse,
+): response is MyMemoryResponse {
   return 'translations' in response;
 }
 
-let dictionaryController: AbortController;
-let translateController: AbortController;
+let yaTranslateController: AbortController;
+let googleTranslateController: AbortController;
+let myMemoryTranslateController: AbortController;
 
-function isDictionaryResultEmpty(
-  sourceLang: string,
-  targetLang: string,
-  dict: DictionaryResponse,
-): boolean {
-  return (dict[`${sourceLang}-${targetLang}`]?.regular?.length ?? 0) === 0;
+function fetchTranslationFromMyMemoryResponse(
+  text: string,
+  response: MyMemoryTranslationResponse,
+) {
+  return [
+    {
+      pos: '',
+      transcription: '',
+      text,
+      values: response.matches.map((matches) => matches.translation),
+    },
+  ];
 }
-async function translateText(
+
+async function nyMemoryTranslate(
   text: string,
   sourceLang: string,
   targetLang: string,
-): Promise<TranslationResult> {
-  translateController = new AbortController();
+): Promise<Translation[]> {
+  myMemoryTranslateController = new AbortController();
   try {
     const url = `https://api.mymemory.translated.net/get?q=${text}&langpair=${sourceLang}|${targetLang}`;
-    const response = await fetch(url, { signal: translateController.signal });
+    const response = await fetch(url, { signal: myMemoryTranslateController.signal });
     if (!response.ok) throw new Error('Failed to fetch translation');
-    const result = (await response.json()) as TranslationResponse;
-    const [matches1, matches2] = partition(
-      result.matches,
-      (match) => match['created-by'] === 'MT!',
-    );
-
-    return { text, translations: [...matches1, ...matches2].map((match) => match.translation) };
+    return fetchTranslationFromMyMemoryResponse(text, await response.json());
   } catch (error) {
-    return { text, translations: [] };
+    return [];
   }
 }
 
-async function lookupDictionary(
+function fetchTranslationFromYaTranslateResponse(
+  sourceLang: string,
+  targetLang: string,
+  response: YaTranslateResponse,
+): Translation[] {
+  console.log('ya:', response);
+  return response?.[`${sourceLang}-${targetLang}`]?.regular.map((item) => ({
+    text: item.text,
+    pos: item.pos?.text,
+    transcription: item.ts,
+    values: item.tr.map((tr) => tr.text),
+  }));
+}
+
+async function yaTranslate(
   text: string,
   sourceLang: string,
   targetLang: string,
-): Promise<DictionaryResponse | null> {
-  dictionaryController = new AbortController();
+): Promise<Translation[] | null> {
+  yaTranslateController = new AbortController();
   try {
     const url = `https://dictionary.yandex.net/dicservice.json/lookupMultiple?text=${text}&dict=${sourceLang}.syn%2Cen.ant%2Cen.deriv%2C${sourceLang}-${targetLang}.regular&flags=103`;
-    const response = await fetch(url, { signal: dictionaryController.signal });
-    if (!response.ok) throw new Error('Failed to fetch dictionary');
+    const response = await fetch(url, { signal: yaTranslateController.signal });
+    if (!response.ok) throw new Error('Failed to yanex translate');
+
+    return fetchTranslationFromYaTranslateResponse(
+      sourceLang,
+      targetLang,
+      await response.json(),
+    );
+  } catch (error) {
+    return null;
+  }
+}
+
+async function googleTranslate(
+  text: string,
+  sourceLang: string,
+  targetLang: string,
+): Promise<GoogleTranslateResponse | null> {
+  googleTranslateController = new AbortController();
+  try {
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&dt=t&dt=bd&dj=1&q=${text}&tl=${targetLang}`;
+    const response = await fetch(url, { signal: googleTranslateController.signal });
+    if (!response.ok) throw new Error('Failed to google translate');
 
     return response.json();
   } catch (error) {
@@ -107,17 +156,17 @@ export async function translate(
   text: string,
   sourceLang: string,
   targetLang: string,
-): Promise<DictionaryResponse | TranslationResult> {
-  const dict = await lookupDictionary(text, sourceLang, targetLang);
+): Promise<Translation[]> {
+  const translations = await yaTranslate(text, sourceLang, targetLang);
 
-  if (!dict || isDictionaryResultEmpty(sourceLang, targetLang, dict)) {
-    return translateText(text, sourceLang, targetLang);
+  if (!translations?.length) {
+    return nyMemoryTranslate(text, sourceLang, targetLang);
   }
 
-  return dict;
+  return translations;
 }
 
 export function cancelTranslate(): void {
-  dictionaryController?.abort();
-  translateController?.abort();
+  yaTranslateController?.abort();
+  myMemoryTranslateController?.abort();
 }

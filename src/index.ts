@@ -179,7 +179,7 @@ if (siteApi.subtitleTransformType === 'mask') {
 }
 
 function onWordLeaveHandler(el: HTMLElement) {
-  hideTranslationPopup();
+  // hideTranslationPopup();
   el.classList.remove(subWordReveal);
   lastHoveredElement = null;
   lastTranslationPopup = null;
