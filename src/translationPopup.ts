@@ -35,10 +35,8 @@ export function insertTranslationPopup(
 export function insertTranslationResult(
   translationPopupEl: HTMLElement,
   translations: Translation[],
-  sourceLang: string,
-  targetLang: string,
 ) {
-  const html = getTranslationHTML(translations, sourceLang, targetLang);
+  const html = getTranslationHTML(translations);
   const loaderEl = translationPopupEl.querySelector(`.${subLoadingClassName}`);
   loaderEl?.insertAdjacentHTML('afterend', toTrustedHTML(html));
   loaderEl?.remove();

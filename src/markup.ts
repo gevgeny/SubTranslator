@@ -43,30 +43,7 @@ function closeIconSVG() {
   `;
 }
 
-export function getTranslationHTML(
-  translations: Translation[],
-  sourceLang: string,
-  targetLang: string,
-) {
-  // if (isTranslationResult(dictResponse)) {
-  //   return `
-  //       <div class="sub-tr-popup-content">
-  //         <div class="sub-tr-dict">
-  //           <div class="sub-tr-dict-item">
-  //             <div class="sub-tr-dict-item-title">
-  //               <span class="sub-tr-dict-item-text">${dictResponse.text}</span>
-  //             </div>
-  //             <ol class="sub-tr-dict-meaning">
-  //             ${dictResponse.translations
-  //               .map((tr) => `<li class="sub-tr-dict-meaning-item">${tr}</li>`)
-  //               .join('')}
-  //             </ol>
-  //           </div>
-  //         </div>
-  //       </div>
-  //   `;
-  // }
-
+export function getTranslationHTML(translations: Translation[]) {
   // prettier-ignore
   return `
     <div class="sub-tr-popup-content">

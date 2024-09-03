@@ -1,4 +1,3 @@
-import { partition } from 'lodash-es';
 import { Language } from './preferencePopup/languages';
 
 interface DictionaryValue {
@@ -67,12 +66,6 @@ export interface Translation {
   pos: string;
   transcription: string;
   values: string[];
-}
-
-export function isTranslationResult(
-  response: MyMemoryResponse | YaTranslateResponse,
-): response is MyMemoryResponse {
-  return 'translations' in response;
 }
 
 let yaTranslateController: AbortController;

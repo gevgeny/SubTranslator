@@ -132,7 +132,7 @@ function playVideo() {
 function translateWord(el: HTMLElement, popupEl: HTMLElement) {
   translate(el.dataset['word'] ?? el.innerText, sourceLang, targetLang)
     .then((translations) => {
-      insertTranslationResult(popupEl, translations, sourceLang, targetLang);
+      insertTranslationResult(popupEl, translations);
     })
     .catch((error) => {
       if (error.name !== 'AbortError') {
