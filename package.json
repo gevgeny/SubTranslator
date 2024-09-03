@@ -1,6 +1,6 @@
 {
   "name": "spotlight-lingo",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "scripts": {
     "start": "node_modules/parcel/lib/bin.js watch manifest.json --config @parcel/config-webextension --no-hmr",
