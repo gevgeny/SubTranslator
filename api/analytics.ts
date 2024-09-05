@@ -6,7 +6,7 @@ export async function POST(request: Request) {
 }
 
 const allowedOrigins = [
-  'chrome-extension://fbkdpdfffgmkfblnonpdhhpoaglpmcpg',
+  'chrome-extension://dleflnkkioeajpjokhniiaieonpacano',
   'http://localhost:3000',
 ];
 
