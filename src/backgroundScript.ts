@@ -1,19 +1,25 @@
+import { UAParser } from 'ua-parser-js';
+
 let sessionId: string | undefined;
 
 let brands = navigator.userAgentData?.brands;
 let os_name: string | undefined;
 let os_version: string | undefined;
+const { browser } = UAParser(navigator.userAgent);
 
-function sendAnalytics({
-  os_name,
-  os_version,
-  brands,
-  session_id,
-  host,
-  meta = {},
-  type,
-  event,
-}: AnalyticsEvent) {
+async function getOrCreateUserId() {
+  const result = await chrome.storage.local.get('userId');
+  console.log('id:', result);
+  let userId = result.userId;
+  if (!userId) {
+    userId = self.crypto.randomUUID();
+    console.log('new id:', result);
+    await chrome.storage.local.set({ userId });
+  }
+  return userId;
+}
+
+async function sendAnalytics({ host, meta = {}, type, event }: AnalyticsEvent) {
   const body = {
     type,
     event,
@@ -21,12 +27,15 @@ function sendAnalytics({
     ua: navigator.userAgent,
     language: navigator.language,
     meta,
-    session_id,
+    session_id: sessionId,
     page_id: host,
     path: host ? `/${host}` : undefined,
     os_name,
     os_version,
     brands,
+    b: browser.name,
+    bv: browser.major,
+    uid: await getOrCreateUserId(),
   };
 
   fetch('https://sub-translator.vercel.app/api/analytics', {
@@ -40,9 +49,11 @@ function sendAnalytics({
     );
 }
 
-navigator.userAgentData
-  ?.getHighEntropyValues(['platform', 'platformVersion'])
-  .then((values) => {
+if (navigator.userAgentData?.getHighEntropyValues) {
+  Promise.all([
+    navigator.userAgentData.getHighEntropyValues(['platform', 'platformVersion']),
+    getOrCreateUserId(),
+  ]).then(([values, userId]) => {
     os_name = values.platform;
     os_version = values.platformVersion;
     const url = encodeURI(
@@ -53,11 +64,15 @@ navigator.userAgentData
         `&tz=${Intl.DateTimeFormat().resolvedOptions().timeZone}` +
         `&os=${os_name}` +
         `&osv=${os_version}` +
+        `&uid=${userId}` +
+        `&b=${browser.name}` +
+        `&bv=${browser.major}` +
         `&brands=${JSON.stringify(brands)}`,
     );
 
     chrome.runtime.setUninstallURL(url);
   });
+}
 
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
@@ -65,11 +80,7 @@ chrome.runtime.onInstalled.addListener((details) => {
       type: 'event',
       event: 'install',
       host: 'install',
-      os_name,
-      os_version,
-      session_id: sessionId,
       meta: {
-        time: +new Date(),
         version: chrome.runtime.getManifest().version,
       },
     });
@@ -88,20 +99,12 @@ chrome.runtime.onMessage.addListener((msg) => {
       type: 'pageview',
       event: 'pageview',
       host: msg.host,
-      os_name,
-      os_version,
-      session_id: sessionId,
-      brands,
     });
 
     sendAnalytics({
       type: 'event',
       event: 'popup',
       host: msg.host,
-      os_name,
-      os_version,
-      session_id: sessionId,
-      brands,
       meta: {
         sourceLang: msg.sourceLang,
         targetLang: msg.targetLang,

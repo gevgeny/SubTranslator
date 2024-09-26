@@ -1,6 +1,6 @@
 {
   "name": "spotlight-lingo",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "",
   "scripts": {
     "start": "node_modules/parcel/lib/bin.js watch manifest.json --config @parcel/config-webextension --no-hmr",
@@ -16,8 +16,10 @@
     "@types/chrome": "0.0.268",
     "@types/lodash-es": "^4.17.12",
     "@vercel/functions": "^1.4.1",
+    "@vercel/postgres": "^0.10.0",
     "cpy-cli": "^5.0.0",
     "lodash-es": "^4.17.21",
+    "ua-parser-js": "^1.0.39",
     "wink-pos-tagger": "^2.2.2"
   },
   "devDependencies": {
@@ -25,6 +27,7 @@
     "@parcel/reporter-bundle-analyzer": "^2.12.0",
     "@parcel/transformer-inline-string": "^2.12.0",
     "@types/node": "^22.4.1",
+    "@types/ua-parser-js": "^0.7.39",
     "bestzip": "^2.2.1",
     "parcel": "^2.12.0",
     "prettier": "3.3.3",
