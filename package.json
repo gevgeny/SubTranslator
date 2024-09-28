@@ -17,6 +17,7 @@
     "@types/lodash-es": "^4.17.12",
     "@vercel/functions": "^1.4.1",
     "@vercel/postgres": "^0.10.0",
+    "countries-and-timezones": "^3.6.0",
     "cpy-cli": "^5.0.0",
     "lodash-es": "^4.17.21",
     "ua-parser-js": "^1.0.39",

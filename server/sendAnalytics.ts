@@ -1,4 +1,5 @@
 import { sql } from '@vercel/postgres';
+import ct from 'countries-and-timezones';
 
 interface AnalyticData {
   event: 'popup' | 'install' | 'uninstall';
@@ -19,9 +20,11 @@ export async function sendAnalytics(params: AnalyticData) {
     .map(([key, value]) => `${key} => ${value}`)
     .join(', ');
 
+  const country = ct.getCountryForTimezone(params.timezone ?? '');
+
   try {
     await sql`
-      INSERT INTO analytic_events (event_name, timezone, language, session_id, user_id, path, os_name, os_version, browser_name, browser_version, meta)
+      INSERT INTO analytic_events (event_name, timezone, language, session_id, user_id, path, os_name, os_version, browser_name, browser_version, country, meta)
       VALUES (
         ${params.event}, 
         ${params.timezone ?? ''}, 
@@ -33,6 +36,7 @@ export async function sendAnalytics(params: AnalyticData) {
         ${params.os_version ?? ''},  
         ${params.b ?? ''},  
         ${params.bv ?? ''},  
+        ${country?.id ?? ''},
         ${meta}
       );
     `;
