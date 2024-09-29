@@ -2,51 +2,40 @@ import { UAParser } from 'ua-parser-js';
 
 let sessionId: string | undefined;
 
-let brands = navigator.userAgentData?.brands;
 let os_name: string | undefined;
 let os_version: string | undefined;
 const { browser } = UAParser(navigator.userAgent);
 
 async function getOrCreateUserId() {
   const result = await chrome.storage.local.get('userId');
-  console.log('id:', result);
   let userId = result.userId;
   if (!userId) {
     userId = self.crypto.randomUUID();
-    console.log('new id:', result);
     await chrome.storage.local.set({ userId });
   }
   return userId;
 }
 
-async function sendAnalytics({ host, meta = {}, type, event }: AnalyticsEvent) {
+async function sendAnalytics({ site, meta = {}, event }: AnalyticsEvent) {
   const body = {
-    type,
-    event,
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    ua: navigator.userAgent,
-    language: navigator.language,
-    meta,
-    session_id: sessionId,
-    page_id: host,
-    path: host ? `/${host}` : undefined,
-    os_name,
-    os_version,
-    brands,
+    e: event,
+    tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    l: navigator.language,
+    sid: sessionId,
+    s: site ?? '',
+    osn: os_name,
+    osv: os_version,
     b: browser.name,
     bv: browser.major,
     uid: await getOrCreateUserId(),
+    meta,
   };
 
   fetch('https://sub-translator.vercel.app/api/analytics', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
-  })
-    .then((r) => r.json())
-    .then((response) =>
-      console.log('analytics request:', body, 'analytics response:', response),
-    );
+  }).then((r) => r.json());
 }
 
 if (navigator.userAgentData?.getHighEntropyValues) {
@@ -57,17 +46,7 @@ if (navigator.userAgentData?.getHighEntropyValues) {
     os_name = values.platform;
     os_version = values.platformVersion;
     const url = encodeURI(
-      `https://sub-translator.vercel.app/api/uninstall/` +
-        `?v=${chrome.runtime.getManifest().version}` +
-        `&l=${navigator.language}` +
-        `&ua=${navigator.userAgent}` +
-        `&tz=${Intl.DateTimeFormat().resolvedOptions().timeZone}` +
-        `&os=${os_name}` +
-        `&osv=${os_version}` +
-        `&uid=${userId}` +
-        `&b=${browser.name}` +
-        `&bv=${browser.major}` +
-        `&brands=${JSON.stringify(brands)}`,
+      `https://sub-translator.vercel.app/api/uninstall/&uid=${userId}`,
     );
 
     chrome.runtime.setUninstallURL(url);
@@ -77,12 +56,8 @@ if (navigator.userAgentData?.getHighEntropyValues) {
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
     sendAnalytics({
-      type: 'event',
       event: 'install',
-      host: 'install',
-      meta: {
-        version: chrome.runtime.getManifest().version,
-      },
+      meta: { v: chrome.runtime.getManifest().version },
     });
   }
 });
@@ -95,21 +70,14 @@ chrome.runtime.onMessage.addListener((msg) => {
     if (!sessionId) {
       sessionId = crypto.randomUUID();
     }
-    sendAnalytics({
-      type: 'pageview',
-      event: 'pageview',
-      host: msg.host,
-    });
 
     sendAnalytics({
-      type: 'event',
       event: 'popup',
-      host: msg.host,
+      site: msg.host,
       meta: {
-        sourceLang: msg.sourceLang,
-        targetLang: msg.targetLang,
-        isHidden: msg.isHidden,
-        theme: msg.theme,
+        sl: msg.sourceLang,
+        tl: msg.targetLang,
+        h: msg.isHidden,
       },
     });
   }

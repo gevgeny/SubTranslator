@@ -7,12 +7,10 @@ type ViewPopupEvent = {
 };
 
 interface AnalyticsEvent {
-  type: 'pageview' | 'event';
-  event: 'pageview' | 'popup' | 'install' | 'uninstall';
-  host?: string;
+  event: 'popup' | 'install' | 'uninstall';
+  site?: string;
   meta?: object;
   os_name?: string;
   os_version?: string;
-  brands?: NavigatorUABrandVersion[];
   session_id?: string;
 }
