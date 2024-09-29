@@ -46,7 +46,7 @@ if (navigator.userAgentData?.getHighEntropyValues) {
     os_name = values.platform;
     os_version = values.platformVersion;
     const url = encodeURI(
-      `https://sub-translator.vercel.app/api/uninstall/&uid=${userId}`,
+      `https://sub-translator.vercel.app/api/uninstall/?uid=${userId}`,
     );
 
     chrome.runtime.setUninstallURL(url);
