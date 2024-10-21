@@ -15,6 +15,7 @@ export function insertTranslationPopup(
   containerEl: HTMLElement,
   offsetBottom: number,
   onClose: () => void,
+  onSettingsOpen: () => void,
 ): HTMLElement {
   const shadowDomWrapperEl = document.createElement('div');
   shadowDomWrapperEl.classList.add(subPopupWrapperClassName);
@@ -29,6 +30,9 @@ export function insertTranslationPopup(
   const popupEl = shadow.querySelector(`.${subPopupClassName}`) as HTMLElement;
   positionElement(popupEl, targetEl, containerEl);
   popupEl.querySelector('.sub-tr-close-icon')?.addEventListener('click', onClose);
+  popupEl
+    .querySelector('.sub-tr-settings-icon')
+    ?.addEventListener('click', onSettingsOpen);
   return popupEl;
 }
 

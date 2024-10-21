@@ -235,3 +235,9 @@ mostFrequentWordsInputEl.addEventListener('change', (event: Event) => {
     savePrefs();
   }
 });
+
+chrome.runtime.onMessage.addListener(async (msg) => {
+  if (msg.type === 'open-settings') {
+    activateTab('settings');
+  }
+});

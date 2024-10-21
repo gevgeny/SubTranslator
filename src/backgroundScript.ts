@@ -62,11 +62,10 @@ chrome.runtime.onInstalled.addListener((details) => {
   }
 });
 
-chrome.runtime.onMessage.addListener((msg) => {
+chrome.runtime.onMessage.addListener(async (msg) => {
   if (msg.type === 'session') {
     sessionId = crypto.randomUUID();
-  }
-  if (msg.type === 'view-popup') {
+  } else if (msg.type === 'view-popup') {
     if (!sessionId) {
       sessionId = crypto.randomUUID();
     }
@@ -80,5 +79,10 @@ chrome.runtime.onMessage.addListener((msg) => {
         h: msg.isHidden,
       },
     });
+  } else if (msg.type === 'open-settings') {
+    await chrome.action.openPopup();
+    setTimeout(() => {
+      chrome.runtime.sendMessage(undefined, { type: 'open-settings' });
+    }, 100);
   }
 });

@@ -1,6 +1,6 @@
 {
-  "name": "Spotlight Lingo \uD83C\uDF0E. Point to Translate Words in Subtitles",
-  "version": "1.1.4",
+  "name": "Spotlight Lingo \uD83C\uDF0E. Translate Subtitles: Youtube, Netflix, Amazon Prime",
+  "version": "1.1.5",
   "description": "Point your mouse to a subtitles word to translate it on Netflix, Amazon Prime, YouTube \uD83C\uDDEC\uD83C\uDDE7\uD83C\uDDEA\uD83C\uDDF8\uD83C\uDDE9\uD83C\uDDEA\uD83C\uDDEB\uD83C\uDDF7\uD83C\uDDEE\uD83C\uDDF9\uD83C\uDDF7\uD83C\uDDFA",
   "manifest_version": 3,
   "background": {

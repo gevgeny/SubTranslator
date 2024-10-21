@@ -24,3 +24,7 @@ document.addEventListener('session', () => {
 document.addEventListener('view-popup', (event: CustomEvent<ViewPopupEvent>) => {
   chrome.runtime.sendMessage(undefined, { type: 'view-popup', ...event.detail });
 });
+
+document.addEventListener('open-settings', () => {
+  chrome.runtime.sendMessage(undefined, { type: 'open-settings' });
+});

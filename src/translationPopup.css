@@ -62,25 +62,41 @@
   justify-content: center;
 }
 
-
-.sub-tr-close-icon {
+.sub-tr-icon {
   z-index: 1;
   fill: transparent;
   cursor: default;
   width: 14px;
   height: 14px;
-  transition: fill .2s;
+  transition: all .2s;
   position: absolute;
   top: 10px;
   right: 14px;
   fill-rule: evenodd;
 }
+
+.sub-tr-close-icon {
+  top: 10px;
+  right: 14px;
+}
+
+.sub-tr-settings-icon {
+  top: 10px;
+  right: 14px;
+  fill: #eeeeee87;
+}
+
+
 .sub-tr-popup:hover .sub-tr-close-icon {
   fill: #eeeeee87;
 }
 
-.sub-tr-popup:hover .sub-tr-close-icon:hover {
+.sub-tr-popup:hover .sub-tr-icon:hover {
   fill: #eeeeee;
+}
+
+.sub-tr-popup:hover .sub-tr-settings-icon {
+  top: 34px;
 }
 
 .lds-spinner {

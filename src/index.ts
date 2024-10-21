@@ -211,6 +211,9 @@ addMouseEnterLeaveEventListeners({
       () => {
         onWordLeaveHandler(el);
       },
+      () => {
+        document.dispatchEvent(new CustomEvent<undefined>('open-settings'));
+      },
     );
     lastTranslationPopup = popupEl;
     lastHoveredElement = el;
