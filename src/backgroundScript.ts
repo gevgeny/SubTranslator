@@ -17,25 +17,25 @@ async function getOrCreateUserId() {
 }
 
 async function sendAnalytics({ site, meta = {}, event }: AnalyticsEvent) {
-  const body = {
-    e: event,
-    tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    l: navigator.language,
-    sid: sessionId,
-    s: site ?? '',
-    osn: os_name,
-    osv: os_version,
-    b: browser.name,
-    bv: browser.major,
-    uid: await getOrCreateUserId(),
-    meta,
-  };
-
-  fetch('https://sub-translator.vercel.app/api/analytics', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  }).then((r) => r.json());
+  // const body = {
+  //   e: event,
+  //   tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  //   l: navigator.language,
+  //   sid: sessionId,
+  //   s: site ?? '',
+  //   osn: os_name,
+  //   osv: os_version,
+  //   b: browser.name,
+  //   bv: browser.major,
+  //   uid: await getOrCreateUserId(),
+  //   meta,
+  // };
+  //
+  // fetch('https://sub-translator.vercel.app/api/analytics', {
+  //   method: 'POST',
+  //   headers: { 'Content-Type': 'application/json' },
+  //   body: JSON.stringify(body),
+  // }).then((r) => r.json());
 }
 
 if (navigator.userAgentData?.getHighEntropyValues) {
@@ -46,7 +46,8 @@ if (navigator.userAgentData?.getHighEntropyValues) {
     os_name = values.platform;
     os_version = values.platformVersion;
     const url = encodeURI(
-      `https://sub-translator.vercel.app/api/uninstall/?uid=${userId}`,
+      // `https://sub-translator.vercel.app/api/uninstall/?uid=${userId}`,
+      `https://app.whirr.co/p/clzpavjjl01iior0hza2y7zk5`,
     );
 
     chrome.runtime.setUninstallURL(url);
