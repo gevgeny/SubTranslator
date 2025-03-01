@@ -1,4 +1,4 @@
-import { Translation } from './translate';
+import { Translation } from './types';
 import { WordMask } from './textProcessing/wrapNodeWords';
 
 export const popupWidth = 220;
@@ -13,8 +13,7 @@ export const subPopupWrapperClassName = 'sub-tr-popup-wrapper';
 export const subPopupClassName = 'sub-tr-popup';
 export const subWordReveal = 'sub-tr-reveal';
 export const subLoadingClassName = 'sub-tr-loading';
-const spinnerHTML =
-  '<div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>';
+const spinnerHTML = '<div class="loader"></div>';
 
 export function getSubtitlesWordHTML(word: string) {
   return `<span class="${subWordClassName}">${word}</span>`;

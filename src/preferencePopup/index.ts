@@ -1,6 +1,6 @@
 import tokens from '../textProcessing/tokens.json';
-import { Language, languages } from './languages';
 import { getPrefs, Prefs, setPrefs } from './prefs';
+import { Language, languages } from '../types';
 
 const versionEl = document.querySelector<HTMLInputElement>('#version')!;
 const commonWordsRangeInputEl = document.querySelector<HTMLInputElement>(

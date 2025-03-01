@@ -1,3 +1,9 @@
 {
-  "buildCommand": ""
+  "buildCommand": "",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "static/$1"
+    }
+  ]
 }

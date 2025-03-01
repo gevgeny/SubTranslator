@@ -1,5 +1,5 @@
 import { logPrefix } from '../utils';
-import { Language } from './languages';
+import { Language } from '../types';
 
 export const defaultPrefs: Prefs = {
   sourceLang: 'en',
