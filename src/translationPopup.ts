@@ -8,7 +8,7 @@ import {
 // @ts-ignore
 import styles from 'bundle-text:./translationPopup.css';
 import { positionElement, toTrustedHTML } from './utils';
-import { Translation } from './translate';
+import { Translation } from './types';
 
 export function insertTranslationPopup(
   targetEl: HTMLElement,

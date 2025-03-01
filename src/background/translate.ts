@@ -1,76 +1,12 @@
-import { Language } from './preferencePopup/languages';
+import {
+  GoogleTranslateResponse,
+  Language,
+  MyMemoryTranslationResponse,
+  Translation,
+  YaTranslateResponse,
+} from '../types';
 
-interface DictionaryValue {
-  code: string;
-  text: string;
-  tooltip: string;
-}
-
-interface DictionarySynonym {
-  text: string;
-  gen: DictionaryValue;
-  pos: DictionaryValue;
-}
-
-interface DictionaryMeaning {
-  text: string;
-  gen: DictionaryValue;
-  syn: DictionarySynonym[];
-  pos: DictionaryValue;
-}
-
-interface DictionaryItem {
-  text: string;
-  pos: DictionaryValue;
-  ts: string;
-  tr: DictionaryMeaning[];
-}
-
-interface Dictionary {
-  regular: DictionaryItem[];
-}
-interface YaTranslateResponse {
-  [langKey: string]: Dictionary;
-}
-
-interface MyMemoryTranslationResponse {
-  responseData: {
-    translatedText: string;
-  };
-  matches: {
-    translation: string;
-    'created-by': string;
-    quality: string;
-  }[];
-}
-
-interface MyMemoryResponse {
-  text: string;
-  translations: string[];
-}
-
-interface GoogleTranslateResponse {
-  sentences: {
-    orig: string;
-    trans: string;
-  }[];
-  dict: {
-    pos: string;
-    base_form: string;
-    terms: string[];
-  }[];
-}
-
-export interface Translation {
-  text: string;
-  pos: string;
-  transcription: string;
-  values: string[];
-}
-
-let yaTranslateController: AbortController;
-let googleTranslateController: AbortController;
-let myMemoryTranslateController: AbortController;
+let abortController: AbortController;
 
 function fetchTranslationFromMyMemoryResponse(
   text: string,
@@ -97,13 +33,13 @@ async function myMemoryTranslate(
   sourceLang: string,
   targetLang: string,
 ): Promise<Translation[]> {
-  myMemoryTranslateController = new AbortController();
   try {
     const url = `https://api.mymemory.translated.net/get?q=${text}&langpair=${sourceLang}|${targetLang}`;
-    const response = await fetch(url, { signal: myMemoryTranslateController.signal });
+    const response = await fetch(url, { signal: abortController.signal });
     if (!response.ok) throw new Error('Failed to fetch translation');
     return fetchTranslationFromMyMemoryResponse(text, await response.json());
   } catch (error) {
+    if (error.name === 'AbortError') throw error;
     return [];
   }
 }
@@ -125,12 +61,11 @@ async function yaTranslate(
   text: string,
   sourceLang: string,
   targetLang: string,
-): Promise<Translation[] | null> {
-  yaTranslateController = new AbortController();
+): Promise<Translation[]> {
   try {
     const url = `https://dictionary.yandex.net/dicservice.json/lookupMultiple?text=${text}&dict=${sourceLang}.syn%2Cen.ant%2Cen.deriv%2C${sourceLang}-${targetLang}.regular&flags=103`;
-    const response = await fetch(url, { signal: yaTranslateController.signal });
-    if (!response.ok) throw new Error('Failed to yanex translate');
+    const response = await fetch(url, { signal: abortController.signal });
+    if (!response.ok) throw new Error('Failed to yandex translate');
 
     return fetchTranslationFromYaTranslateResponse(
       sourceLang,
@@ -138,7 +73,8 @@ async function yaTranslate(
       await response.json(),
     );
   } catch (error) {
-    return null;
+    if (error.name === 'AbortError') throw error;
+    return [];
   }
 }
 
@@ -169,14 +105,14 @@ async function googleTranslate(
   sourceLang: string,
   targetLang: string,
 ): Promise<Translation[]> {
-  googleTranslateController = new AbortController();
   try {
     const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&dt=t&dt=bd&dj=1&q=${text}&tl=${targetLang}`;
-    const response = await fetch(url, { signal: googleTranslateController.signal });
+    const response = await fetch(url, { signal: abortController.signal });
     if (!response.ok) throw new Error('Failed to google translate');
 
     return fetchTranslationFromGoogleTranslateResponse(await response.json());
   } catch (error) {
+    if (error.name === 'AbortError') throw error;
     return [];
   }
 }
@@ -186,7 +122,9 @@ export async function translate(
   sourceLang: Language,
   targetLang: Language,
 ): Promise<Translation[]> {
-  let translations;
+  let translations: Translation[];
+
+  abortController = new AbortController();
   const [translate1, translate2] =
     sourceLang === 'ru' || targetLang === 'ru'
       ? [yaTranslate, googleTranslate]
@@ -206,6 +144,5 @@ export async function translate(
 }
 
 export function cancelTranslate(): void {
-  yaTranslateController?.abort();
-  myMemoryTranslateController?.abort();
+  abortController?.abort();
 }

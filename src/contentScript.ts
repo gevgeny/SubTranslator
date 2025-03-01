@@ -1,5 +1,6 @@
 import { getPrefs } from './preferencePopup/prefs';
 import { injectCss, injectJs } from './utils';
+import { TranslateEvent, Translation, ViewPopupEvent } from './types';
 
 function sendCurrentPrefsToInjectedScripts(): void {
   getPrefs((prefs) => {
@@ -27,4 +28,22 @@ document.addEventListener('view-popup', (event: CustomEvent<ViewPopupEvent>) => 
 
 document.addEventListener('open-settings', () => {
   chrome.runtime.sendMessage(undefined, { type: 'open-settings' });
+});
+
+document.addEventListener('translate', (event: CustomEvent<TranslateEvent>) => {
+  chrome.runtime
+    .sendMessage(undefined, { type: 'translate', ...event.detail })
+    .then((result: { translations?: Translation[] }) => {
+      if (!result.translations?.length) return;
+
+      document.dispatchEvent(
+        new CustomEvent('translate-result', {
+          detail: { translations: result.translations },
+        }),
+      );
+    });
+});
+
+document.addEventListener('cancel-last-translate', () => {
+  chrome.runtime.sendMessage(undefined, { type: 'cancel-last-translate' });
 });

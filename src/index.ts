@@ -4,7 +4,6 @@ import {
   maskTextWords,
   WordMask,
 } from './textProcessing/wrapNodeWords';
-import { translate, cancelTranslate } from './translate';
 import {
   insertTranslationPopup,
   insertTranslationResult,
@@ -30,6 +29,7 @@ import addMouseEnterLeaveEventListeners, {
   logPrefix,
   positionElement,
 } from './utils';
+import { TranslateEvent, Translation, ViewPopupEvent } from './types';
 
 const siteApi = getSiteSpecificApi(location.host);
 let sourceLang = defaultPrefs.sourceLang;
@@ -129,16 +129,16 @@ function playVideo() {
   }, 300);
 }
 
-function translateWord(el: HTMLElement, popupEl: HTMLElement) {
-  translate(el.dataset['word'] ?? el.innerText, sourceLang, targetLang)
-    .then((translations) => {
-      insertTranslationResult(popupEl, translations);
-    })
-    .catch((error) => {
-      if (error.name !== 'AbortError') {
-        throw error;
-      }
-    });
+function translateWord(el: HTMLElement) {
+  document.dispatchEvent(
+    new CustomEvent<TranslateEvent>('translate', {
+      detail: {
+        text: el.dataset['word'] ?? el.innerText,
+        sourceLang,
+        targetLang,
+      },
+    }),
+  );
 }
 
 function sendPopupViewedMessage(isHidden: boolean) {
@@ -183,7 +183,7 @@ function onWordLeaveHandler(el: HTMLElement) {
   el.classList.remove(subWordReveal);
   lastHoveredElement = null;
   lastTranslationPopup = null;
-  cancelTranslate();
+  document.dispatchEvent(new CustomEvent<undefined>('cancel-last-translate'));
   playVideo();
 }
 // Show/hide the popup with translation on mousehover of a word in the subtitles.
@@ -204,7 +204,7 @@ addMouseEnterLeaveEventListeners({
 
     if (!containerEl) return;
 
-    const popupEl = insertTranslationPopup(
+    lastTranslationPopup = insertTranslationPopup(
       el,
       containerEl,
       siteApi.popupOffsetBottom,
@@ -215,11 +215,10 @@ addMouseEnterLeaveEventListeners({
         document.dispatchEvent(new CustomEvent<undefined>('open-settings'));
       },
     );
-    lastTranslationPopup = popupEl;
     lastHoveredElement = el;
     isVideoPaused = isVideoPaused || siteApi.pause();
     clearTimeout(Number(videoPlayTimer));
-    translateWord(el, popupEl);
+    translateWord(el);
   },
 
   onLeave: onWordLeaveHandler,
@@ -240,6 +239,15 @@ document.addEventListener('prefs', (event: CustomEvent<Prefs>) => {
 
   console.log(logPrefix, 'prefs updated:', prefs);
 });
+
+document.addEventListener(
+  'translate-result',
+  (event: CustomEvent<{ translations: Translation[] }>) => {
+    if (lastTranslationPopup) {
+      insertTranslationResult(lastTranslationPopup, event.detail.translations);
+    }
+  },
+);
 
 setInterval(() => {
   // Keep the position of the translation popup actual
